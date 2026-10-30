@@ -11,6 +11,8 @@ var current_day := 1
 var _timer := 0.0
 
 func _ready() -> void:
+	current_day = GameState.current_day
+	current_hour = GameState.current_hour
 	hour_changed.emit(current_hour, current_day)
 
 func _process(delta: float) -> void:
@@ -30,7 +32,8 @@ func _pass_hour() -> void:
 		current_day += 1
 		GameState.current_day = current_day  # GameState'i güncelle
 		GameState.day_passed.emit(current_day)
-		
+
+	GameState.current_hour = current_hour
 	hour_changed.emit(current_hour, current_day)
 
 func force_pass_hour() -> void:

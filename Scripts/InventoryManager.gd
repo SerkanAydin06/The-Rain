@@ -14,6 +14,7 @@ var displayed_items = []  # Gösterilecek item'ların listesi
 
 func _ready() -> void:
 	print("📦 InventoryManager hazır")
+	GameState.inventory_changed.connect(_on_inventory_changed)
 	_initialize_displayed_items()
 
 func _initialize_displayed_items() -> void:
@@ -42,8 +43,7 @@ func get_item_amount(item_id: String) -> int:
 	return GameState.inventory.get(item_id, 0)
 
 func use_item(item_id: String) -> bool:
-	if GameState.inventory.get(item_id, 0) > 0:
-		GameState.inventory[item_id] -= 1
+	if GameState.remove_from_inventory(item_id):
 		item_used.emit(item_id)
 		return true
 	return false
@@ -61,4 +61,11 @@ func get_item_display_name(item_id: String) -> String:
 		"metal": return "⚙️ Metal"
 		"chemical": return "🧪 Kimyasal"
 		"circuit": return "💻 Devre"
+		"energy_drink": return "🥤 Enerji İçeceği"
+		"stone": return "🪨 Taş"
+		"wire": return "🔌 Tel"
+		"electronic": return "💻 Elektronik"
+		"fuel": return "⛽ Yakıt"
+		"medicine": return "💊 İlaç"
+		"component": return "⚡ Bileşen"
 		_: return "📦 " + item_id.capitalize()

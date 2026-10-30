@@ -21,7 +21,6 @@ signal player_died(reason: String, stats: Dictionary)
 var health := 100.0
 var hunger := 100.0
 var energy := 100.0
-var suit := 100.0
 
 var hunger_rate := 2.0
 var energy_rate := 1.0
@@ -37,6 +36,7 @@ var _is_time_manager_connected := false  # ⭐ TimeManager bağlantı kontrolü
 # LIFECYCLE
 # ==================================================
 func _ready():
+	_apply_saved_stats()
 	update_ui()
 	_setup_player_light()
 	print("✅ Player hazır")
@@ -71,6 +71,14 @@ func _physics_process(delta: float) -> void:
 	
 	_handle_animations(dir)
 	move_and_slide()
+
+func _apply_saved_stats() -> void:
+	var s: Dictionary = GameState.player_stats
+	if s.is_empty():
+		return
+	health = float(s.get("health", health))
+	hunger = float(s.get("hunger", hunger))
+	energy = float(s.get("energy", energy))
 
 # ==================================================
 # TIME MANAGER BAĞLANTISI
@@ -188,6 +196,10 @@ func _on_hour_passed(_hour: int, _day: int) -> void:
 	if is_dead: 
 		return
 	
+	# Dışarıdayken değerleri OutsidePanel simülasyonu yönetir
+	if GameState.is_outside:
+		return
+	
 	print_debug("Saat geçiyor - Saat: ", _hour, ", Gün: ", _day)
 	
 	# Eğer uyuyorsa bonus, değilse normal kayıp
@@ -285,6 +297,29 @@ func start_sleep(hours: int, fade_node: CanvasLayer = null) -> void:
 	print_debug("Uyku bitti")
 	is_unconscious = false
 	is_sleeping = false
+	if not is_dead:
+		GameState.save_game()
+
+func use_consumable(item: String) -> bool:
+	if is_dead or is_sleeping:
+		return false
+	match item:
+		"food":
+			if hunger >= 100.0 or not GameState.remove_from_inventory("food"):
+				return false
+			hunger = clampf(hunger + 35.0, 0.0, 100.0)
+		"medkit":
+			if health >= 100.0 or not GameState.remove_from_inventory("medkit"):
+				return false
+			health = clampf(health + 40.0, 0.0, 100.0)
+		"energy_drink":
+			if energy >= 100.0 or not GameState.remove_from_inventory("energy_drink"):
+				return false
+			energy = clampf(energy + 25.0, 0.0, 100.0)
+		_:
+			return false
+	update_ui()
+	return true
 
 func die() -> void:
 	if is_dead: return
@@ -293,6 +328,10 @@ func die() -> void:
 	var reason := "injury"
 	if hunger <= 0: reason = "starvation"
 	elif energy <= 0: reason = "exhaustion"
+	
+	# Ölünce eski kayıttan devam edilemesin
+	if FileAccess.file_exists("user://savegame.save"):
+		DirAccess.remove_absolute("user://savegame.save")
 	
 	var stats = {
 		"days_survived": GameState.current_day,

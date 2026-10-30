@@ -194,7 +194,7 @@ func _on_restart_pressed() -> void:
 	await tween.finished
 	
 	# Oyunu yeniden başlat
-	GameState.game_paused = false
+	GameState.reset_game()
 	get_tree().reload_current_scene()
 
 func _on_menu_pressed() -> void:

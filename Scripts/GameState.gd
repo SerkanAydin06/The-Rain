@@ -13,6 +13,9 @@ signal day_passed(day: int)
 var game_paused := false
 var is_outside := false
 var current_day := 1
+var current_hour := 0
+# Kayıttan yüklenen oyuncu değerleri (boşsa varsayılanlar kullanılır)
+var player_stats := {}
 var total_loot := 0
 var suit_durability := 100
 
@@ -92,9 +95,11 @@ var stack_limits = {
 func save_game() -> void:
 	var save_data = {
 		"current_day": current_day,
+		"current_hour": current_hour,
 		"total_loot": total_loot,
 		"suit_durability": suit_durability,
-		"inventory": inventory
+		"inventory": inventory,
+		"player_stats": _collect_player_stats()
 	}
 	
 	var file = FileAccess.open("user://savegame.save", FileAccess.WRITE)
@@ -124,7 +129,9 @@ func load_game() -> bool:
 		return false
 	
 	var save_data = json.get_data()
-	current_day = save_data.get("current_day", 1)
+	current_day = int(save_data.get("current_day", 1))
+	current_hour = int(save_data.get("current_hour", 0))
+	player_stats = save_data.get("player_stats", {})
 	total_loot = save_data.get("total_loot", 0)
 	suit_durability = save_data.get("suit_durability", 100)
 	
@@ -134,7 +141,7 @@ func load_game() -> bool:
 		# Yeni item'ları ekle, eski item'ları koru
 		for key in inventory.keys():
 			if old_inventory.has(key):
-				inventory[key] = old_inventory[key]
+				inventory[key] = int(old_inventory[key])
 	
 	print("✅ Oyun yüklendi!")
 	return true
@@ -142,10 +149,18 @@ func load_game() -> bool:
 # ==================================================
 # YENİ FONKSİYONLAR
 # ==================================================
+func _collect_player_stats() -> Dictionary:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null or not "health" in player:
+		return player_stats
+	return {"health": player.health, "hunger": player.hunger, "energy": player.energy}
+
 func reset_game() -> void:
 	game_paused = false
 	is_outside = false
 	current_day = 1
+	current_hour = 0
+	player_stats = {}
 	total_loot = 0
 	suit_durability = 100
 	
@@ -175,10 +190,10 @@ func reset_game() -> void:
 	
 	print("🔄 Oyun durumu sıfırlandı!")
 
-func add_to_inventory(item: String, amount: int = 1) -> void:
+func add_to_inventory(item: String, amount: int = 1) -> int:
 	if not inventory.has(item):
 		push_warning("⚠️ Bilinmeyen item: ", item)
-		return
+		return 0
 	
 	var current = inventory.get(item, 0)
 	var limit = stack_limits.get(item, 99)
@@ -188,6 +203,7 @@ func add_to_inventory(item: String, amount: int = 1) -> void:
 	inventory_changed.emit()
 	
 	print("📦 Envantere eklendi: ", item, " ×", amount, " (Toplam: ", new_amount, ")")
+	return new_amount - current
 
 func remove_from_inventory(item: String, amount: int = 1) -> bool:
 	if not inventory.has(item):

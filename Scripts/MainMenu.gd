@@ -211,10 +211,7 @@ func _on_new_game_pressed() -> void:
 	_delete_save_file()
 	
 	# GameState'i resetle
-	GameState.current_day = 1
-	GameState.total_loot = 0
-	GameState.suit_durability = 100
-	GameState.game_paused = false
+	GameState.reset_game()
 	
 	# Ana sahneyi yükle
 	_transition_to_game()
@@ -233,7 +230,7 @@ func _on_load_game_pressed() -> void:
 		print("Kayıtlı oyun bulunamadı!")
 		title_label.text = "KAYIT BULUNAMADI!"
 		await get_tree().create_timer(1.5).timeout
-		title_label.text = "SURVIVAL SHELTER"
+		title_label.text = "THE RAIN"
 
 func _on_settings_pressed() -> void:
 	"""Ayarlar menüsünü aç"""

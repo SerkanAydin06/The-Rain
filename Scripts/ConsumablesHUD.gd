@@ -380,8 +380,9 @@ func _on_item_gui_input(event: InputEvent, item_type: String, item_name: String)
 			print("🖱️ %s kullanılıyor..." % item_name)
 			_play_click_effect(item_type)
 			
-			# Burada item kullanma mantığını ekleyebilirsiniz
-			# Örneğin: Player.gd'de use_item fonksiyonunu çağır
+			var player = get_tree().get_first_node_in_group("player")
+			if player and player.has_method("use_consumable"):
+				player.use_consumable(item_type)
 
 func _play_click_effect(item_type: String) -> void:
 	var container_node = null

@@ -266,6 +266,9 @@ func _on_exit_pressed() -> void:
 	_play_button_sound()
 	_prepare_for_exit()
 	await _simulate_exit()
+	if player.is_dead:
+		hide()
+		return
 	_show_results()
 
 func _on_result_ok() -> void:
@@ -360,17 +363,10 @@ func _generate_result_report(collected: Dictionary) -> String:
 	report += "[b][color=#2ecc71]📦 BU GEZİDE TOPLANANLAR:[/color][/b]\n"
 	
 	var found_items := false
-	var items := [
-		{"key": "food", "name": "Yiyecek", "color": "#2ecc71"},
-		{"key": "battery", "name": "Pil", "color": "#3498db"},
-		{"key": "medkit", "name": "Medkit", "color": "#e74c3c"},
-		{"key": "scrap", "name": "Parça", "color": "#f39c12"}
-	]
-	
-	for item in items:
-		var amount = collected.get(item.key, 0)
+	for key in collected:
+		var amount = collected[key]
 		if amount > 0:
-			report += "• %s: [color=%s]+%d[/color]\n" % [item.name, item.color, amount]
+			report += "• %s: [color=#2ecc71]+%d[/color]\n" % [InventoryManager.get_item_display_name(key), amount]
 			found_items = true
 	
 	if not found_items:

@@ -25,7 +25,7 @@ func _setup_global_darkness():
 	global_darkness.name = "GlobalDarkness"
 	
 	# Orta karanlık bir renk (gece efekti)
-	global_darkness.color = Color(0.01, 0.01, 0.02)
+	global_darkness.color = Color(0.10, 0.10, 0.12)
 	
 	add_child(global_darkness)
 	
@@ -66,12 +66,6 @@ func _setup_connections():
 		player.player_died.connect(death_screen.show_death_screen)
 		print("     ✅ DeathScreen bağlandı (show_death_screen)")
 	
-	# 3. TimeManager -> Player bağlantısı
-	if player and time_manager:
-		if not time_manager.hour_changed.is_connected(player._on_hour_passed):
-			time_manager.hour_changed.connect(player._on_hour_passed)
-			print("     ✅ TimeManager -> Player bağlandı")
-	
 	print("   🔗 Bağlantılar tamamlandı")
 
 func _connect_to_time_system():
@@ -80,6 +74,7 @@ func _connect_to_time_system():
 		if not time_manager.hour_changed.is_connected(_on_time_changed):
 			time_manager.hour_changed.connect(_on_time_changed)  # ⭐ 2 parametre bağlanıyor
 			print("   ⏰ TimeManager ışık sistemine bağlandı")
+		_on_time_changed(time_manager.current_hour, time_manager.current_day)
 	else:
 		print("   ⏰ TimeManager bulunamadı veya sinyal yok")
 
