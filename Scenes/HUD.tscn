@@ -1,0 +1,203 @@
+[gd_scene load_steps=13 format=3 uid="uid://bq86ewdbv75rd"]
+
+[ext_resource type="Script" uid="uid://6iyll6ax6y74" path="res://Scripts/HUD.gd" id="1_c3eba"]
+[ext_resource type="Texture2D" uid="uid://i7nd0ykvi1vr" path="res://icons/healthicon.png" id="2_g8s2e"]
+[ext_resource type="Texture2D" uid="uid://bn1605n2hoanj" path="res://icons/hungericon.png" id="3_t385i"]
+[ext_resource type="Texture2D" uid="uid://lphbgk2x8ub0" path="res://icons/energyicon.png" id="4_nfm57"]
+[ext_resource type="Texture2D" uid="uid://clqhw8bkrhpuo" path="res://icons/suiticon.png" id="5_b5b84"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbb48"]
+bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.49803922, 0.54901963, 0.5529412, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o2vyp"]
+bg_color = Color(0.39607844, 0, 0, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hhtw7"]
+bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.49803922, 0.54901963, 0.5529412, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w5mne"]
+bg_color = Color(0, 0.36057857, 0.14491868, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xuldq"]
+bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.49803922, 0.54901963, 0.5529412, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6jqq"]
+bg_color = Color(0.042218767, 0.26037687, 0.39750758, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ouvn"]
+bg_color = Color(0.4679007, 0.000159024, 0.46990812, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="HUD" type="Control" groups=["hud"]]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c3eba")
+metadata/_edit_use_anchors_ = true
+
+[node name="MainMargin" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 420.0
+offset_bottom = 205.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BarsVBox" type="VBoxContainer" parent="MainMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HealthRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HealthIcon" type="TextureRect" parent="MainMargin/BarsVBox/HealthRow"]
+custom_minimum_size = Vector2(70, 35)
+layout_mode = 2
+texture = ExtResource("2_g8s2e")
+expand_mode = 1
+
+[node name="HealthLabel" type="Label" parent="MainMargin/BarsVBox/HealthRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "HEALTH"
+vertical_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="MainMargin/BarsVBox/HealthRow"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_fbb48")
+theme_override_styles/fill = SubResource("StyleBoxFlat_o2vyp")
+value = 100.0
+
+[node name="HungerRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HungerIcon" type="TextureRect" parent="MainMargin/BarsVBox/HungerRow"]
+custom_minimum_size = Vector2(70, 35)
+layout_mode = 2
+texture = ExtResource("3_t385i")
+expand_mode = 1
+
+[node name="HungerLabel" type="Label" parent="MainMargin/BarsVBox/HungerRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "HUNGER"
+vertical_alignment = 1
+
+[node name="HungerBar" type="ProgressBar" parent="MainMargin/BarsVBox/HungerRow"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_hhtw7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_w5mne")
+value = 100.0
+
+[node name="EnergyRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EnergyIcon" type="TextureRect" parent="MainMargin/BarsVBox/EnergyRow"]
+custom_minimum_size = Vector2(70, 35)
+layout_mode = 2
+texture = ExtResource("4_nfm57")
+expand_mode = 1
+
+[node name="EnergyLabel" type="Label" parent="MainMargin/BarsVBox/EnergyRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "ENERGY"
+vertical_alignment = 1
+
+[node name="EnergyBar" type="ProgressBar" parent="MainMargin/BarsVBox/EnergyRow"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xuldq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g6jqq")
+value = 100.0
+
+[node name="SuitRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SuitIcon" type="TextureRect" parent="MainMargin/BarsVBox/SuitRow"]
+custom_minimum_size = Vector2(70, 35)
+layout_mode = 2
+texture = ExtResource("5_b5b84")
+expand_mode = 1
+
+[node name="SuitLabel" type="Label" parent="MainMargin/BarsVBox/SuitRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "SUIT"
+vertical_alignment = 1
+
+[node name="SuitBar" type="ProgressBar" parent="MainMargin/BarsVBox/SuitRow"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xuldq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5ouvn")
+value = 100.0

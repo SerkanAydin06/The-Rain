@@ -1,0 +1,173 @@
+[gd_scene load_steps=21 format=3 uid="uid://dgnxu77krwlnp"]
+
+[ext_resource type="Script" uid="uid://8k2hef2uono5" path="res://Scripts/Main.gd" id="1_c5snn"]
+[ext_resource type="Script" uid="uid://brecppnxwhegt" path="res://Scripts/TimeManager.gd" id="1_ma7h6"]
+[ext_resource type="PackedScene" uid="uid://d2nn2xox33t40" path="res://Scenes/Room.tscn" id="2_e2s0e"]
+[ext_resource type="Script" uid="uid://6a3ns68shu58" path="res://Scripts/World.gd" id="2_vs04g"]
+[ext_resource type="PackedScene" uid="uid://bq86ewdbv75rd" path="res://Scenes/HUD.tscn" id="7_sxkr1"]
+[ext_resource type="PackedScene" uid="uid://cqi5s20uuvg5y" path="res://Scenes/RightSideInventory.tscn" id="8_fq0cl"]
+[ext_resource type="PackedScene" uid="uid://borq8sb6il2ep" path="res://Scenes/DeathScreen.tscn" id="9_hwpts"]
+[ext_resource type="PackedScene" uid="uid://d4gx2peg0yry7" path="res://Scenes/ConsumablesHUD.tscn" id="10_jyqft"]
+[ext_resource type="PackedScene" uid="uid://b13aiviwm4s7n" path="res://Scenes/CraftingPanel.tscn" id="11_3tgeq"]
+[ext_resource type="PackedScene" uid="uid://b8vo50y0rfjwb" path="res://Scenes/LoadingBox.tscn" id="12_c4ay3"]
+[ext_resource type="PackedScene" uid="uid://iaroj81rmnt4" path="res://Scenes/ResultBox.tscn" id="13_aht7i"]
+[ext_resource type="PackedScene" uid="uid://bm7qm2j61x1cp" path="res://Scenes/SleepFade.tscn" id="14_5jffn"]
+[ext_resource type="PackedScene" uid="uid://c4i311e2ynwgq" path="res://Scenes/OutsidePanel.tscn" id="15_kpo4j"]
+[ext_resource type="PackedScene" uid="uid://btiiydog5u50k" path="res://Scenes/ExitPanel.tscn" id="16_4n42c"]
+[ext_resource type="PackedScene" uid="uid://cl51iqdppqegt" path="res://Scenes/DialogueUI.tscn" id="17_c5snn"]
+[ext_resource type="Script" uid="uid://dv5w25hqudd4r" path="res://Scripts/GameState.gd" id="21_gdcyb"]
+[ext_resource type="PackedScene" uid="uid://c1qec0o5b6us5" path="res://Scenes/UI.tscn" id="22_oa6sj"]
+[ext_resource type="Script" uid="uid://c1rtb1mibqjmu" path="res://Scripts/TimeLabel.gd" id="23_0f1tp"]
+[ext_resource type="Texture2D" uid="uid://cjpjln2b3eny7" path="res://kaplama/zemin1.png" id="39_6ehlx"]
+[ext_resource type="Texture2D" uid="uid://oc33j5vswgf3" path="res://kaplama/Background.png" id="39_vs04g"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_c5snn")
+
+[node name="World" type="Node2D" parent="."]
+script = ExtResource("2_vs04g")
+
+[node name="Room" parent="World" instance=ExtResource("2_e2s0e")]
+
+[node name="TimeManager" type="Node2D" parent="World" groups=["time_manager"]]
+script = ExtResource("1_ma7h6")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="World"]
+color = Color(0.17641911, 0.17641908, 0.17641908, 1)
+
+[node name="UI" parent="." instance=ExtResource("22_oa6sj")]
+layer = 0
+
+[node name="TimeLabel" type="Label" parent="UI" groups=["UI"]]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+horizontal_alignment = 1
+script = ExtResource("23_0f1tp")
+time_manager_path = NodePath("../../World/TimeManager")
+
+[node name="HUD" parent="UI" instance=ExtResource("7_sxkr1")]
+
+[node name="RightSideInventory" parent="UI" instance=ExtResource("8_fq0cl")]
+
+[node name="DeathScreen" parent="UI" instance=ExtResource("9_hwpts")]
+
+[node name="ConsumablesHUD" parent="UI" instance=ExtResource("10_jyqft")]
+
+[node name="CraftingPanel" parent="UI" instance=ExtResource("11_3tgeq")]
+
+[node name="LoadingBox" parent="UI" instance=ExtResource("12_c4ay3")]
+
+[node name="ResultBox" parent="UI" instance=ExtResource("13_aht7i")]
+
+[node name="SleepFade" parent="UI" instance=ExtResource("14_5jffn")]
+
+[node name="OutsidePanel" parent="UI" instance=ExtResource("15_kpo4j")]
+
+[node name="ExitPanel" parent="UI" instance=ExtResource("16_4n42c")]
+
+[node name="DialogueUI" parent="UI" instance=ExtResource("17_c5snn")]
+
+[node name="GameState" type="Node" parent="."]
+script = ExtResource("21_gdcyb")
+
+[node name="ArkaPlanlar" type="Node2D" parent="."]
+
+[node name="ArkaPlan2" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(99, -124.00001)
+rotation = 3.1415927
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan4" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(99, -180)
+rotation = 3.1415927
+scale = Vector2(0.2, -0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan5" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(-99.00001, -180)
+scale = Vector2(0.19999997, 0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan3" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(-99.00001, -124)
+scale = Vector2(0.2, -0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan6" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(-298, -180)
+scale = Vector2(-0.2, 0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan7" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(-298.00003, -124.000015)
+scale = Vector2(-0.2, -0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan8" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(298, -180)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="ArkaPlan9" type="Sprite2D" parent="ArkaPlanlar"]
+z_index = -3
+position = Vector2(298, -124.000015)
+scale = Vector2(0.2, -0.2)
+texture = ExtResource("39_vs04g")
+
+[node name="Zemin1" type="Sprite2D" parent="ArkaPlanlar"]
+position = Vector2(-206, -90)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("39_6ehlx")
+
+[node name="Zemin2" type="Sprite2D" parent="ArkaPlanlar"]
+position = Vector2(207.00002, -90.00001)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("39_6ehlx")
+
+[node name="Tavan1" type="Sprite2D" parent="ArkaPlanlar"]
+position = Vector2(-206.00002, -213.00002)
+scale = Vector2(-0.2, -0.2)
+texture = ExtResource("39_6ehlx")
+
+[node name="Tavan2" type="Sprite2D" parent="ArkaPlanlar"]
+position = Vector2(207, -213)
+scale = Vector2(-0.2, -0.2)
+texture = ExtResource("39_6ehlx")
+
+[node name="ZeminKaranlik" type="ColorRect" parent="ArkaPlanlar"]
+offset_left = -473.0
+offset_top = -95.0
+offset_right = 470.0
+offset_bottom = -64.0
+color = Color(0, 0, 0, 1)
+
+[node name="TavanKaraklik" type="ColorRect" parent="ArkaPlanlar"]
+offset_left = -473.0
+offset_top = -238.0
+offset_right = 470.0
+offset_bottom = -208.0
+color = Color(0, 0, 0, 1)
+
+[node name="SağKaranlik" type="ColorRect" parent="ArkaPlanlar"]
+offset_left = 399.0
+offset_top = -238.0
+offset_right = 615.0
+offset_bottom = -64.0
+color = Color(0, 0, 0, 1)
+
+[node name="SolKaranlik" type="ColorRect" parent="ArkaPlanlar"]
+offset_left = -587.0
+offset_top = -238.0
+offset_right = -398.0
+offset_bottom = -64.0
+color = Color(0, 0, 0, 1)

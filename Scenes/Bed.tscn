@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cu48uv0najkrt"]
+
+[ext_resource type="Script" uid="uid://cfnfmpw3wbrsi" path="res://Scripts/Bed.gd" id="1_fqty4"]
+
+[node name="Bed" type="Node2D"]
+z_index = 1
+script = ExtResource("1_fqty4")

@@ -1,0 +1,644 @@
+[gd_scene load_steps=38 format=3 uid="uid://dgnxu77krwlnp"]
+
+[ext_resource type="Script" uid="uid://brecppnxwhegt" path="res://Scriptes/TimeManager.gd" id="1_yc10j"]
+[ext_resource type="PackedScene" uid="uid://d2nn2xox33t40" path="res://scenes/Room.tscn" id="2_jscy8"]
+[ext_resource type="Texture2D" uid="uid://d2yd8vg65ekfx" path="res://itemler/Wall.png" id="3_pm3ni"]
+[ext_resource type="Texture2D" uid="uid://dgpegtvx4tfs5" path="res://itemler/Grass.png" id="4_y6deb"]
+[ext_resource type="Texture2D" uid="uid://c5ci3n1j055tv" path="res://itemler/Floor.png" id="5_og1vs"]
+[ext_resource type="PackedScene" uid="uid://yg7psn82akor" path="res://scenes/Player.tscn" id="6_2wyq8"]
+[ext_resource type="Texture2D" uid="uid://6tv20b3ww7js" path="res://karakter/image-1.png.png" id="7_vxglm"]
+[ext_resource type="Texture2D" uid="uid://c3h3vvhhsavhk" path="res://karakter/image-2.png.png" id="8_2f3dj"]
+[ext_resource type="Texture2D" uid="uid://blmpab83gwd50" path="res://karakter/image-3.png.png" id="9_yq6so"]
+[ext_resource type="Texture2D" uid="uid://3dls4my3d771" path="res://karakter/image-4.png.png" id="10_fv21b"]
+[ext_resource type="Texture2D" uid="uid://dihyc0sgi02nm" path="res://karakter/image-5.png.png" id="11_tel4y"]
+[ext_resource type="PackedScene" uid="uid://3mmkobolk38o" path="res://scenes/Receiver.tscn" id="12_qkpxi"]
+[ext_resource type="Script" uid="uid://cbwnpqrsyimw5" path="res://Scriptes/Receiver.gd" id="13_5q0nq"]
+[ext_resource type="Texture2D" uid="uid://bqflqmnqcby3j" path="res://itemler/Receiver.png" id="14_dgi5k"]
+[ext_resource type="PackedScene" uid="uid://cu48uv0najkrt" path="res://scenes/bed.tscn" id="15_j8jky"]
+[ext_resource type="Texture2D" uid="uid://c5kkv48djug46" path="res://itemler/Bed.png" id="16_kmb1v"]
+[ext_resource type="PackedScene" uid="uid://c1qec0o5b6us5" path="res://scenes/ui.tscn" id="17_fuf3a"]
+[ext_resource type="Script" uid="uid://bc3kxc8tw8dhv" path="res://Scriptes/FoodShelf.gd" id="17_jscy8"]
+[ext_resource type="Texture2D" uid="uid://kqclldgnh07h" path="res://itemler/FoodShelf.png" id="18_og1vs"]
+[ext_resource type="Script" uid="uid://c1rtb1mibqjmu" path="res://Scriptes/TimeLabel.gd" id="18_pibwh"]
+[ext_resource type="Script" uid="uid://s4jk7el816lg" path="res://Scriptes/Door.gd" id="18_y6deb"]
+[ext_resource type="Script" uid="uid://g3l0w0mo55jb" path="res://Scriptes/Dialogue_ui.gd" id="19_c6pm6"]
+[ext_resource type="Script" uid="uid://c8krms26xbeqv" path="res://Scriptes/SleepFade.gd" id="20_5he1u"]
+[ext_resource type="Texture2D" uid="uid://d3h2pkc7fp72o" path="res://itemler/Ladder.png" id="20_og1vs"]
+[ext_resource type="Script" uid="uid://cm6w7dnfbltc0" path="res://Scriptes/Death_screen.gd" id="21_5poiv"]
+[ext_resource type="Script" uid="uid://bac1fohs2oat6" path="res://Scriptes/ExitPanel.gd" id="26_2wyq8"]
+[ext_resource type="Script" uid="uid://jab6n1pyg6mp" path="res://OutsidePanel.gd" id="27_vxglm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2cjbq"]
+size = Vector2(10, 308)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chjal"]
+size = Vector2(10, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cjqg0"]
+size = Vector2(1000, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vchkt"]
+size = Vector2(1000, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_txyw0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_vxglm")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_vxglm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_2f3dj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_yq6so")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_fv21b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_tel4y")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vc5cj"]
+size = Vector2(14, 46)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nvyfr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ty1g6"]
+size = Vector2(54, 19)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yc10j"]
+size = Vector2(45, 45)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2wyq8"]
+size = Vector2(9.5, 46.5)
+
+[node name="Main" type="Node2D"]
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="TimeManager" type="Node2D" parent="World"]
+script = ExtResource("1_yc10j")
+
+[node name="Room" parent="World" instance=ExtResource("2_jscy8")]
+position = Vector2(0, -121)
+
+[node name="Walls" type="Node2D" parent="World/Room"]
+
+[node name="Wall_Left" type="StaticBody2D" parent="World/Room/Walls"]
+position = Vector2(-500, -40)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Walls/Wall_Left"]
+position = Vector2(-2, 41)
+shape = SubResource("RectangleShape2D_2cjbq")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Walls/Wall_Left"]
+position = Vector2(0, 40.000008)
+scale = Vector2(4, 4.84375)
+texture = ExtResource("3_pm3ni")
+region_rect = Rect2(0, 0, 10, 300)
+
+[node name="Wall_Right" type="StaticBody2D" parent="World/Room/Walls"]
+position = Vector2(500, 0)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Walls/Wall_Right"]
+shape = SubResource("RectangleShape2D_chjal")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Walls/Wall_Right"]
+position = Vector2(1, 8.34465e-07)
+scale = Vector2(3.96875, 4.8437495)
+texture = ExtResource("3_pm3ni")
+region_rect = Rect2(0, 0, 10, 300)
+
+[node name="Wall_Top" type="StaticBody2D" parent="World/Room/Walls"]
+position = Vector2(0, -150)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Walls/Wall_Top"]
+shape = SubResource("RectangleShape2D_cjqg0")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Walls/Wall_Top"]
+position = Vector2(-0.99998736, 0)
+scale = Vector2(1.012, 1)
+texture = ExtResource("4_y6deb")
+region_enabled = true
+region_rect = Rect2(0, 0, 1000, 10)
+
+[node name="Floor" type="StaticBody2D" parent="World/Room/Walls"]
+position = Vector2(0, 150)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Walls/Floor"]
+shape = SubResource("RectangleShape2D_vchkt")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Walls/Floor"]
+position = Vector2(-2.5000165, 6)
+scale = Vector2(15.859375, 2)
+texture = ExtResource("5_og1vs")
+region_rect = Rect2(0, 0, 1000, 10)
+
+[node name="Floor" type="StaticBody2D" parent="World/Room/Walls/Floor"]
+position = Vector2(0, -105)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Walls/Floor/Floor"]
+shape = SubResource("RectangleShape2D_vchkt")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Walls/Floor/Floor"]
+position = Vector2(-2.5000165, 6)
+scale = Vector2(15.4, 2)
+texture = ExtResource("5_og1vs")
+region_rect = Rect2(0, 0, 1000, 10)
+
+[node name="Player" parent="World/Room" instance=ExtResource("6_2wyq8")]
+position = Vector2(1, 121)
+collision_layer = 2
+collision_mask = 5
+speed = 120.0
+sprite_path = NodePath("AnimatedSprite2D")
+health_bar_path = NodePath("../../../UI/HUD/HealthBar")
+hunger_bar_path = NodePath("../../../UI/HUD/HungerBar")
+energy_bar_path = NodePath("../../../UI/HUD/EnergyBar")
+health_text_path = NodePath("../../../UI/HUD/HealthText")
+hunger_text_path = NodePath("../../../UI/HUD/HungerText")
+energy_text_path = NodePath("../../../UI/HUD/EnergyText")
+death_screen_path = NodePath("../../../UI/DeathScreen")
+sleep_fade_path = NodePath("../../../UI/SleepFade")
+time_manager_path = NodePath("../../TimeManager")
+
+[node name="Camera2D" type="Camera2D" parent="World/Room/Player"]
+offset = Vector2(0, -15)
+zoom = Vector2(2, 2)
+process_callback = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="World/Room/Player"]
+z_index = 2
+position = Vector2(1, 1)
+sprite_frames = SubResource("SpriteFrames_txyw0")
+animation = &"walk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Player"]
+shape = SubResource("RectangleShape2D_vc5cj")
+
+[node name="Receiver" parent="World/Room" groups=["interactable"] instance=ExtResource("12_qkpxi")]
+position = Vector2(230, 129)
+script = ExtResource("13_5q0nq")
+dialogue_ui_path = NodePath("../../../UI/DialogueUI")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Receiver"]
+texture = ExtResource("14_dgi5k")
+
+[node name="Area2D" type="Area2D" parent="World/Room/Receiver"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Receiver/Area2D"]
+shape = SubResource("RectangleShape2D_nvyfr")
+
+[node name="InteractionHint" type="Label" parent="World/Room/Receiver"]
+offset_left = -28.0
+offset_top = -40.0
+offset_right = 30.0
+offset_bottom = -28.0
+theme_override_font_sizes/font_size = 8
+text = "E - Frekans Ara"
+
+[node name="Bed" parent="World/Room" groups=["interactable"] instance=ExtResource("15_j8jky")]
+position = Vector2(362, 129)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Bed"]
+texture = ExtResource("16_kmb1v")
+
+[node name="Area2D" type="Area2D" parent="World/Room/Bed"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Bed/Area2D"]
+position = Vector2(-2, 7)
+shape = SubResource("RectangleShape2D_ty1g6")
+
+[node name="InteractionHint" type="Label" parent="World/Room/Bed"]
+offset_left = -12.0
+offset_top = -40.0
+offset_right = 13.0
+offset_bottom = -28.0
+theme_override_font_sizes/font_size = 8
+text = "E- Uyu"
+
+[node name="FoodShelf" type="Node2D" parent="World/Room" groups=["interactable"]]
+position = Vector2(136, 131)
+script = ExtResource("17_jscy8")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/FoodShelf"]
+position = Vector2(3.33786e-06, -11.1500025)
+scale = Vector2(0.71874994, 0.75468755)
+texture = ExtResource("18_og1vs")
+
+[node name="Area2D" type="Area2D" parent="World/Room/FoodShelf"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/FoodShelf/Area2D"]
+position = Vector2(0.5, -12.5)
+shape = SubResource("RectangleShape2D_yc10j")
+
+[node name="InteractionHint" type="Label" parent="World/Room/FoodShelf"]
+offset_left = -13.0
+offset_top = -50.0
+offset_right = 11.0
+offset_bottom = -38.0
+theme_override_font_sizes/font_size = 8
+text = "E - Eat"
+
+[node name="Door" type="Node2D" parent="World/Room" groups=["interactable"]]
+position = Vector2(-370, 108)
+scale = Vector2(2, 2)
+script = ExtResource("18_y6deb")
+exit_panel_path = NodePath("../../../UI/ExitPanel")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Room/Door"]
+position = Vector2(0.5, -5.0000005)
+scale = Vector2(0.5, 0.75)
+texture = ExtResource("20_og1vs")
+
+[node name="Area2D" type="Area2D" parent="World/Room/Door"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Room/Door/Area2D"]
+position = Vector2(0.75, -4.75)
+shape = SubResource("RectangleShape2D_2wyq8")
+
+[node name="InteractionHint" type="Label" parent="World/Room/Door"]
+offset_left = 8.0
+offset_top = -13.5
+offset_right = 52.0
+offset_bottom = -1.5
+theme_override_font_sizes/font_size = 8
+text = "E- Kapıyı Aç"
+
+[node name="ColorRect" type="ColorRect" parent="World/Room"]
+offset_left = -496.0
+offset_top = -142.0
+offset_right = 490.0
+offset_bottom = 146.0
+color = Color(0.04755766, 0.047557645, 0.047557645, 0.39215687)
+
+[node name="UI" parent="." instance=ExtResource("17_fuf3a")]
+layer = 0
+
+[node name="HUD" type="Control" parent="UI" groups=["UI"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="TextureProgressBar" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="EnergyBar" type="TextureProgressBar" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HungerBar" type="TextureProgressBar" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HealthText" type="Label" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.47959495, 0, 0.049996473, 1)
+text = "HEALTH: 100"
+
+[node name="EnergyText" type="Label" parent="UI/HUD"]
+layout_mode = 0
+offset_top = 60.0
+offset_right = 98.0
+offset_bottom = 83.0
+theme_override_colors/font_color = Color(0.06355329, 0, 0.7237281, 1)
+text = "ENERGY: 100"
+
+[node name="HungerText" type="Label" parent="UI/HUD"]
+layout_mode = 0
+offset_top = 30.0
+offset_right = 104.0
+offset_bottom = 53.0
+theme_override_colors/font_color = Color(0, 0.2514682, 0.0151709085, 1)
+text = "HUNGER: 100"
+
+[node name="TimeLabel" type="Label" parent="UI" groups=["UI"]]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+horizontal_alignment = 1
+script = ExtResource("18_pibwh")
+time_manager_path = NodePath("../../World/TimeManager")
+
+[node name="DialogueUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("19_c6pm6")
+
+[node name="Panel" type="Panel" parent="UI/DialogueUI"]
+visible = false
+modulate = Color(0.29954746, 0.29954746, 0.29954743, 1)
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -188.0
+offset_right = -2.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="UI/DialogueUI/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 103.0
+offset_top = -3.0
+offset_right = -102.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+text = "..."
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="SleepFade" type="CanvasLayer" parent="UI"]
+visible = false
+script = ExtResource("20_5he1u")
+
+[node name="ColorRect" type="ColorRect" parent="UI/SleepFade"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="DeathScreen" type="Control" parent="UI" groups=["death"]]
+visible = false
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("21_5poiv")
+
+[node name="ColorRect" type="ColorRect" parent="UI/DeathScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="UI/DeathScreen"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 300.0
+offset_right = 737.0
+offset_bottom = 410.0
+theme_override_colors/font_color = Color(0.37638646, 0, 0.12207579, 1)
+theme_override_font_sizes/font_size = 80
+text = "ÖLDÜN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExitPanel" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("26_2wyq8")
+
+[node name="Panel" type="Panel" parent="UI/ExitPanel"]
+modulate = Color(0.003921569, 0.003921569, 0.003921569, 1)
+self_modulate = Color(0.003921569, 0.003921569, 0.003921569, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -130.0
+offset_right = 200.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 44.0
+offset_right = 247.0
+offset_bottom = 78.0
+theme_override_font_sizes/font_size = 24
+text = "Dışarı Çık"
+
+[node name="TimeLabel" type="Label" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 89.0
+offset_right = 125.0
+offset_bottom = 112.0
+
+[node name="RiskLabel" type="Label" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 182.0
+offset_top = 85.0
+offset_right = 222.0
+offset_bottom = 108.0
+
+[node name="SuitLabel" type="Label" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 105.0
+offset_right = 127.0
+offset_bottom = 128.0
+
+[node name="BtnTimePlus" type="Button" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 104.0
+offset_right = 60.0
+offset_bottom = 124.0
+
+[node name="BtnTimeMinus" type="Button" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 138.0
+offset_right = 58.0
+offset_bottom = 158.0
+
+[node name="BtnExit" type="Button" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 193.0
+offset_right = 169.0
+offset_bottom = 224.0
+text = "Dışarı Çık"
+
+[node name="BtnCancel" type="Button" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = 234.0
+offset_top = 193.0
+offset_right = 295.0
+offset_bottom = 224.0
+text = "Vazgeç"
+
+[node name="ResultBox" type="VBoxContainer" parent="UI/ExitPanel/Panel"]
+layout_mode = 0
+offset_left = -376.0
+offset_top = -194.0
+offset_right = -203.0
+offset_bottom = -44.0
+
+[node name="ResultTitle" type="Label" parent="UI/ExitPanel/Panel/ResultBox"]
+layout_mode = 2
+text = "SONUÇ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResultText" type="Label" parent="UI/ExitPanel/Panel/ResultBox"]
+layout_mode = 2
+
+[node name="BtnOk" type="Button" parent="UI/ExitPanel/Panel/ResultBox"]
+layout_mode = 2
+text = "Tamam"
+
+[node name="OutsidePanel" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("27_vxglm")
+
+[node name="BlackBG" type="ColorRect" parent="UI/OutsidePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Fade" type="ColorRect" parent="UI/OutsidePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Panel" type="Panel" parent="UI/OutsidePanel"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TimeLabel" type="Label" parent="UI/OutsidePanel/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -0.5
+offset_right = 0.5
+offset_bottom = 23.0
+grow_horizontal = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="UI/OutsidePanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -23.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="SuitLabel" type="Label" parent="UI/OutsidePanel/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LootLog" type="RichTextLabel" parent="UI/OutsidePanel/Panel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 93.0
+offset_top = -77.0
+offset_right = 94.0
+offset_bottom = -77.0
+grow_vertical = 0
+
+[connection signal="body_entered" from="World/Room/Receiver/Area2D" to="World/Room/Receiver" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="World/Room/Receiver/Area2D" to="World/Room/Receiver" method="_on_area_2d_body_exited"]
+[connection signal="body_entered" from="World/Room/Bed/Area2D" to="World/Room/Bed" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="World/Room/Bed/Area2D" to="World/Room/Bed" method="_on_area_2d_body_exited"]
+[connection signal="body_entered" from="World/Room/FoodShelf/Area2D" to="World/Room/FoodShelf" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="World/Room/FoodShelf/Area2D" to="World/Room/FoodShelf" method="_on_area_2d_body_exited"]
+[connection signal="body_entered" from="World/Room/Door/Area2D" to="World/Room/Door" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="World/Room/Door/Area2D" to="World/Room/Door" method="_on_area_2d_body_exited"]

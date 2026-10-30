@@ -1,0 +1,353 @@
+[gd_scene load_steps=31 format=3 uid="uid://c0c1gxyi825is"]
+
+[ext_resource type="Script" uid="uid://brecppnxwhegt" path="res://Scripts/TimeManager.gd" id="1_1lgw5"]
+[ext_resource type="PackedScene" uid="uid://d2nn2xox33t40" path="res://Scenes/Room.tscn" id="1_nnsk1"]
+[ext_resource type="PackedScene" uid="uid://yg7psn82akor" path="res://Scenes/Player.tscn" id="2_71j4m"]
+[ext_resource type="Texture2D" uid="uid://d2yd8vg65ekfx" path="res://kaplama/Wall.png" id="3_30fn3"]
+[ext_resource type="Script" uid="uid://c1rtb1mibqjmu" path="res://Scripts/TimeLabel.gd" id="4_d1c63"]
+[ext_resource type="Texture2D" uid="uid://dgpegtvx4tfs5" path="res://kaplama/Grass.png" id="4_dgldv"]
+[ext_resource type="PackedScene" uid="uid://3mmkobolk38o" path="res://Scenes/Receiver.tscn" id="4_hlk0d"]
+[ext_resource type="Texture2D" path="res://Karakter/image-1.png.png" id="4_rpuxp"]
+[ext_resource type="PackedScene" uid="uid://cu48uv0najkrt" path="res://Scenes/Bed.tscn" id="5_0uv0p"]
+[ext_resource type="Texture2D" path="res://Karakter/image-2.png.png" id="5_nthub"]
+[ext_resource type="Texture2D" uid="uid://c5ci3n1j055tv" path="res://kaplama/Floor.png" id="5_rm3lh"]
+[ext_resource type="Texture2D" path="res://Karakter/image-3.png.png" id="6_44lqw"]
+[ext_resource type="PackedScene" uid="uid://c1qec0o5b6us5" path="res://Scenes/UI.tscn" id="6_hlk0d"]
+[ext_resource type="Script" uid="uid://cbwnpqrsyimw5" path="res://Scripts/Receiver.gd" id="6_nrtoj"]
+[ext_resource type="Texture2D" path="res://Karakter/image-4.png.png" id="7_dwmkc"]
+[ext_resource type="Texture2D" path="res://Karakter/image-5.png.png" id="8_30fn3"]
+[ext_resource type="Script" path="res://Scriptes/Dialogue_ui.gd" id="8_b3faq"]
+[ext_resource type="Script" uid="uid://c8krms26xbeqv" path="res://Scripts/SleepFade.gd" id="9_ygioq"]
+[ext_resource type="Texture2D" path="res://Itemler/Receiver.png" id="11_nthub"]
+[ext_resource type="Script" path="res://Scriptes/Death_screen.gd" id="12_nrtoj"]
+[ext_resource type="Texture2D" uid="uid://c5kkv48djug46" path="res://Itemler/yatak1.png" id="16_yncth"]
+[ext_resource type="Script" uid="uid://bc3kxc8tw8dhv" path="res://Scripts/FoodShelf.gd" id="17_dgldv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jgbtq"]
+size = Vector2(10, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4q8dg"]
+size = Vector2(10, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lawxi"]
+size = Vector2(1000, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uni40"]
+size = Vector2(1000, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dgldv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_rpuxp")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_rpuxp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_nthub")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_44lqw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_dwmkc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_30fn3")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rm3lh"]
+size = Vector2(14, 46)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_44lqw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aqlsr"]
+size = Vector2(54, 19)
+
+[node name="World" type="Node2D"]
+
+[node name="TimeManager" type="Node2D" parent="."]
+script = ExtResource("1_1lgw5")
+time_speed = 64.39999999999999
+
+[node name="Room" parent="." instance=ExtResource("1_nnsk1")]
+position = Vector2(0, -121)
+
+[node name="Walls" type="Node2D" parent="Room"]
+
+[node name="Wall_Left" type="StaticBody2D" parent="Room/Walls"]
+position = Vector2(-500, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Walls/Wall_Left"]
+shape = SubResource("RectangleShape2D_jgbtq")
+
+[node name="Sprite2D" type="Sprite2D" parent="Room/Walls/Wall_Left"]
+scale = Vector2(4, 5)
+texture = ExtResource("3_30fn3")
+region_rect = Rect2(0, 0, 10, 300)
+
+[node name="Wall_Right" type="StaticBody2D" parent="Room/Walls"]
+position = Vector2(500, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Walls/Wall_Right"]
+shape = SubResource("RectangleShape2D_4q8dg")
+
+[node name="Sprite2D" type="Sprite2D" parent="Room/Walls/Wall_Right"]
+position = Vector2(2, 0)
+scale = Vector2(4, 5)
+texture = ExtResource("3_30fn3")
+region_rect = Rect2(0, 0, 10, 300)
+
+[node name="Wall_Top" type="StaticBody2D" parent="Room/Walls"]
+position = Vector2(0, -150)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Walls/Wall_Top"]
+shape = SubResource("RectangleShape2D_lawxi")
+
+[node name="Sprite2D" type="Sprite2D" parent="Room/Walls/Wall_Top"]
+texture = ExtResource("4_dgldv")
+region_enabled = true
+region_rect = Rect2(0, 0, 1000, 10)
+
+[node name="Floor" type="StaticBody2D" parent="Room/Walls"]
+position = Vector2(0, 150)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Walls/Floor"]
+shape = SubResource("RectangleShape2D_uni40")
+
+[node name="Sprite2D" type="Sprite2D" parent="Room/Walls/Floor"]
+position = Vector2(0, 6)
+scale = Vector2(16, 2)
+texture = ExtResource("5_rm3lh")
+region_rect = Rect2(0, 0, 1000, 10)
+
+[node name="Player" parent="Room" instance=ExtResource("2_71j4m")]
+position = Vector2(1, 121)
+speed = 120.0
+sprite_path = NodePath("AnimatedSprite2D")
+health_bar_path = NodePath("../../UI/HUD/HealthBar")
+hunger_bar_path = NodePath("../../UI/HUD/HungerBar")
+energy_bar_path = NodePath("../../UI/HUD/EnergyBar")
+health_text_path = NodePath("../../UI/HUD/HealthText")
+hunger_text_path = NodePath("../../UI/HUD/HungerText")
+energy_text_path = NodePath("../../UI/HUD/EnergyText")
+death_screen_path = NodePath("../../UI/DeathScreen")
+sleep_fade_path = NodePath("../../UI/SleepFade")
+time_manager_path = NodePath("../../TimeManager")
+
+[node name="Camera2D" type="Camera2D" parent="Room/Player"]
+offset = Vector2(0, -50)
+zoom = Vector2(3, 3)
+process_callback = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Room/Player"]
+z_index = 2
+position = Vector2(1, 1)
+sprite_frames = SubResource("SpriteFrames_dgldv")
+animation = &"walk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Player"]
+shape = SubResource("RectangleShape2D_rm3lh")
+
+[node name="Receiver" parent="Room" instance=ExtResource("4_hlk0d")]
+position = Vector2(230, 129)
+script = ExtResource("6_nrtoj")
+dialogue_ui_path = NodePath("../../UI/DialogueUI")
+
+[node name="Sprite2D" type="Sprite2D" parent="Room/Receiver"]
+texture = ExtResource("11_nthub")
+
+[node name="Area2D" type="Area2D" parent="Room/Receiver"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Receiver/Area2D"]
+shape = SubResource("RectangleShape2D_44lqw")
+
+[node name="InteractionHint" type="Label" parent="Room/Receiver"]
+offset_left = -33.0
+offset_top = -29.0
+offset_right = 39.0
+offset_bottom = -15.0
+theme_override_font_sizes/font_size = 10
+text = "E - Frekans Ara"
+
+[node name="Bed" parent="Room" instance=ExtResource("5_0uv0p")]
+position = Vector2(362, 129)
+
+[node name="Sprite2D" type="Sprite2D" parent="Room/Bed"]
+texture = ExtResource("16_yncth")
+
+[node name="Area2D" type="Area2D" parent="Room/Bed"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Bed/Area2D"]
+position = Vector2(-2, 7)
+shape = SubResource("RectangleShape2D_aqlsr")
+
+[node name="InteractionHint" type="Label" parent="Room/Bed"]
+visible = false
+offset_left = -13.0
+offset_top = -15.0
+offset_right = 13.0
+offset_bottom = -3.0
+theme_override_font_sizes/font_size = 8
+text = "E- UYU"
+
+[node name="FoodShelf" type="Node2D" parent="Room"]
+script = ExtResource("17_dgldv")
+
+[node name="UI" parent="." instance=ExtResource("6_hlk0d")]
+
+[node name="DialogueUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_b3faq")
+
+[node name="Panel" type="Panel" parent="UI/DialogueUI"]
+visible = false
+modulate = Color(0.29954746, 0.29954746, 0.29954743, 1)
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -188.0
+offset_right = -2.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="UI/DialogueUI/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 103.0
+offset_top = -3.0
+offset_right = -102.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+text = "..."
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="HUD" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="TextureProgressBar" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="EnergyBar" type="TextureProgressBar" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HungerBar" type="TextureProgressBar" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HealthText" type="Label" parent="UI/HUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.47959495, 0, 0.049996473, 1)
+text = "HEALTH: 100"
+
+[node name="EnergyText" type="Label" parent="UI/HUD"]
+layout_mode = 0
+offset_top = 60.0
+offset_right = 98.0
+offset_bottom = 83.0
+theme_override_colors/font_color = Color(0.06355329, 0, 0.7237281, 1)
+text = "ENERGY: 100"
+
+[node name="HungerText" type="Label" parent="UI/HUD"]
+layout_mode = 0
+offset_top = 30.0
+offset_right = 104.0
+offset_bottom = 53.0
+theme_override_colors/font_color = Color(0, 0.2514682, 0.0151709085, 1)
+text = "HUNGER: 100"
+
+[node name="DeathScreen" type="Control" parent="UI"]
+visible = false
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("12_nrtoj")
+
+[node name="ColorRect" type="ColorRect" parent="UI/DeathScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="UI/DeathScreen"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 300.0
+offset_right = 737.0
+offset_bottom = 410.0
+theme_override_colors/font_color = Color(0.37638646, 0, 0.12207579, 1)
+theme_override_font_sizes/font_size = 80
+text = "ÖLDÜN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="UI"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+horizontal_alignment = 1
+script = ExtResource("4_d1c63")
+time_manager_path = NodePath("../../TimeManager")
+
+[node name="SleepFade" type="CanvasLayer" parent="UI"]
+layer = 100
+visible = false
+script = ExtResource("9_ygioq")
+
+[node name="ColorRect" type="ColorRect" parent="UI/SleepFade"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[connection signal="body_entered" from="Room/Receiver/Area2D" to="Room/Receiver" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Room/Receiver/Area2D" to="Room/Receiver" method="_on_area_2d_body_exited"]
+[connection signal="body_entered" from="Room/Bed/Area2D" to="Room/Bed" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Room/Bed/Area2D" to="Room/Bed" method="_on_area_2d_body_exited"]
