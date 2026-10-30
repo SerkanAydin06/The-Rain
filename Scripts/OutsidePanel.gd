@@ -68,7 +68,6 @@ func _fade_in():
 	await tween.finished
 
 func _run_hours():
-	print_debug("Dışarı çıkış simülasyonu başlıyor: ", hours_left, " saat")
 	
 	# GameState'i güncelle
 	GameState.is_outside = true
@@ -87,10 +86,6 @@ func _run_hours():
 		if player.health <= 0:
 			break
 		
-		print_debug("Simülasyon - Kalan: ", hours_left, " saat")
-		print_debug("  - Player HP: ", player.health)
-		print_debug("  - Açlık: ", player.hunger)
-		print_debug("  - Enerji: ", player.energy)
 		
 		# Godot 4 için doğru timer oluşturma
 		# Pause modunda çalışacak şekilde
@@ -110,7 +105,6 @@ func _run_hours():
 	else:
 		SurvivalManager.record_trip(trip_hours)
 		GameState.save_game()
-	print_debug("Dışarı çıkış simülasyonu tamamlandı")
 
 func _simulate_hour():
 	hour_index += 1

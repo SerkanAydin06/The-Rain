@@ -5,7 +5,6 @@ extends Node2D
 @onready var global_darkness: CanvasModulate
 
 func _ready():
-	print("🌍 World hazırlanıyor...")
 	
 	# 1. Global karanlık efekti
 	_setup_global_darkness()
@@ -23,7 +22,6 @@ func _ready():
 		if GameSettings.show_hints:
 			SurvivalManager.notify("A/D yürü  ·  E etkileşim  ·  TAB envanter  ·  1-4 hızlı kullanım  ·  ESC menü")
 	
-	print("✅ World hazır!")
 
 func _setup_global_darkness():
 	# CanvasModulate oluştur - tüm ekranı etkiler
@@ -35,11 +33,8 @@ func _setup_global_darkness():
 	
 	add_child(global_darkness)
 	
-	print("✅ Global karanlık efekti eklendi")
-	print("   - Renk: ", global_darkness.color)
 
 func _setup_connections():
-	print("   🔗 Bağlantılar kuruluyor...")
 	
 	# 1 frame bekle (tüm node'lar hazır olsun)
 	await get_tree().process_frame
@@ -51,16 +46,11 @@ func _setup_connections():
 	var time_manager = get_tree().get_first_node_in_group("time_manager")
 	
 	# Debug
-	print("     - Player: ", "✅" if player else "❌")
-	print("     - HUD: ", "✅" if hud else "❌")
-	print("     - DeathScreen: ", "✅" if death_screen else "❌")
-	print("     - TimeManager: ", "✅" if time_manager else "❌")
 	
 	# 1. Player -> HUD bağlantısı
 	if player and hud:
 		if not player.stats_changed.is_connected(hud._on_player_stats_changed):
 			player.stats_changed.connect(hud._on_player_stats_changed)
-			print("     ✅ HUD bağlandı")
 	
 	# 2. Player -> DeathScreen bağlantısı
 	if death_screen and player:
@@ -74,9 +64,7 @@ func _setup_connections():
 	# Kurtarılma -> zafer ekranı
 	if death_screen and not SurvivalManager.rescue_arrived.is_connected(_on_rescue_arrived):
 		SurvivalManager.rescue_arrived.connect(_on_rescue_arrived)
-		print("     ✅ DeathScreen bağlandı (show_death_screen)")
 	
-	print("   🔗 Bağlantılar tamamlandı")
 
 func _on_rescue_arrived() -> void:
 	var death_screen = get_tree().get_first_node_in_group("death_screen")
@@ -88,10 +76,7 @@ func _connect_to_time_system():
 	if time_manager and time_manager.has_signal("hour_changed"):
 		if not time_manager.hour_changed.is_connected(_on_time_changed):
 			time_manager.hour_changed.connect(_on_time_changed)  # ⭐ 2 parametre bağlanıyor
-			print("   ⏰ TimeManager ışık sistemine bağlandı")
 		_on_time_changed(time_manager.current_hour, time_manager.current_day)
-	else:
-		print("   ⏰ TimeManager bulunamadı veya sinyal yok")
 
 func _on_time_changed(hour: int, day: int):
 	if not global_darkness:
@@ -102,11 +87,9 @@ func _on_time_changed(hour: int, day: int):
 	if hour >= 18 or hour <= 6:
 		# Gece: ÇOK koyu
 		global_darkness.color = Color(0.10, 0.10, 0.12)  # ⭐ Neredeyse siyah
-		print("   🌙🌑 Gece modu - Çok Karanlık (", hour, ":00)")
 	else:
 		# Gündüz: yine karanlık ama biraz açık
 		global_darkness.color = Color(0.15, 0.15, 0.18)  # ⭐ Karanlık
-		print("   ☀️🌆 Gündüz modu - Karanlık (", hour, ":00)")
 
 # Opsiyonel: Dışarı/İçeri geçişler için
 func set_environment_mode(is_inside: bool):
@@ -117,40 +100,6 @@ func set_environment_mode(is_inside: bool):
 	if is_inside:
 		# İçeride: daha karanlık
 		global_darkness.color = Color(0.15, 0.15, 0.2)
-		print("   🏠 İç mekan - Karanlık")
 	else:
 		# Dışarıda: normal
 		global_darkness.color = Color(0.22, 0.22, 0.28)
-		print("   🌳 Dış mekan - Normal")
-
-# Debug için: Işık ayarlarını değiştir
-func debug_change_light(brightness: float = 1.0):
-	"""Debug: Işık parlaklığını değiştir"""
-	if global_darkness:
-		global_darkness.color = global_darkness.color * brightness
-		print("   🔦 Işık parlaklığı: x", brightness)
-
-func _debug_lighting():
-	print("\n=== LIGHTING DEBUG ===")
-	
-	print("Total lights in scene: ", get_tree().get_nodes_in_group("lights").size())
-	
-	# CanvasModulate kontrolü
-	var canvas_nodes = []
-	for node in get_children():
-		if node is CanvasModulate:
-			canvas_nodes.append(node)
-	print("CanvasModulate nodes: ", canvas_nodes.size())
-	
-	# Player light kontrolü
-	var player = get_tree().get_first_node_in_group("player")
-	if player:
-		for child in player.get_children():
-			if child is PointLight2D:
-				print("Player light found:")
-				print("  - Energy: ", child.energy)
-				print("  - Visible: ", child.visible)
-				print("  - Color: ", child.color)
-	
-	print("=== END DEBUG ===\n")
-	

@@ -42,7 +42,6 @@ func _ready():
 	_apply_saved_stats()
 	update_ui()
 	_setup_player_light()
-	print("✅ Player hazır")
 	
 	await get_tree().process_frame
 	_connect_to_time_manager()
@@ -88,7 +87,6 @@ func _apply_saved_stats() -> void:
 # TIME MANAGER BAĞLANTISI
 # ==================================================
 func _connect_to_time_manager() -> void:
-	print("🕐 Player: TimeManager bağlantısı deneniyor...")
 	
 	# 1. Frame bekle
 	await get_tree().process_frame
@@ -119,7 +117,6 @@ func _connect_to_time_manager() -> void:
 		# Yeni bağlantıyı yap
 		time_manager.hour_changed.connect(_on_hour_passed)
 		_is_time_manager_connected = true
-		print("✅ Player: TimeManager'a bağlandı")
 
 # ==================================================
 # HAREKET KONTROL FONKSİYONLARI
@@ -128,14 +125,12 @@ func enable_movement() -> void:
 	"""Hareketi etkinleştir"""
 	can_move = true
 	ui_blocked = false
-	print("🚶 Player: Hareket etkinleştirildi")
 
 func disable_movement() -> void:
 	"""Hareketi devre dışı bırak"""
 	can_move = false
 	ui_blocked = true
 	velocity = Vector2.ZERO  # ⭐ Hızı sıfırla
-	print("🚫 Player: Hareket devre dışı bırakıldı")
 
 # ==================================================
 # ANIMASYONLAR
@@ -185,7 +180,6 @@ func _setup_player_light():
 	add_child(light)
 	player_light = light
 	light.z_index = 100
-	print("✅ Player ışığı oluşturuldu")
 
 # ==================================================
 # OYUN MEKANİKLERİ
@@ -204,7 +198,6 @@ func _on_hour_passed(_hour: int, _day: int) -> void:
 	if GameState.is_outside:
 		return
 	
-	print_debug("Saat geçiyor - Saat: ", _hour, ", Gün: ", _day)
 	
 	# Eğer uyuyorsa bonus, değilse normal kayıp
 	if is_sleeping:
@@ -235,23 +228,19 @@ func _on_hour_passed(_hour: int, _day: int) -> void:
 	
 	_update_light()
 	
-	print_debug("Yeni değerler - HP: ", health, " Açlık: ", hunger, " Enerji: ", energy)
 	
 	# Bayılma kontrolü
 	if energy <= 0 and not is_unconscious:
-		print_debug("Enerji bitti, bayılıyor...")
 		faint()
 	
 	# Ölüm kontrolü
 	if health <= 0:
-		print_debug("Ölüm!")
 		die()
 	
 	# UI güncelle
 	update_ui()
 
 func update_ui() -> void:
-	print_debug("UI güncelleniyor - HP: ", health, " Açlık: ", hunger, " Enerji: ", energy, " Suit: ", GameState.suit_durability)
 	stats_changed.emit(health, hunger, energy, GameState.suit_durability, thirst)
 
 func _update_light() -> void:
@@ -273,7 +262,6 @@ func start_sleep(hours: int, fade_node: CanvasLayer = null) -> void:
 	if is_sleeping or is_dead: 
 		return
 	
-	print_debug("Uyku başlıyor: ", hours, " saat")
 	
 	# EĞER dışarıdan fade_node gelmediyse, gruptan bul:
 	var final_fade = fade_node
@@ -287,30 +275,23 @@ func start_sleep(hours: int, fade_node: CanvasLayer = null) -> void:
 	
 	# Fade in efekti
 	if final_fade:
-		print_debug("Fade in başlıyor...")
 		final_fade.fade_in(1.5)
 		await final_fade.fade_in_completed
 	
 	# Zaman ilerletme mantığı - DEĞİŞTİR
 	var tm = get_tree().get_first_node_in_group("time_manager")
 	if tm:
-		print_debug("TimeManager bulundu, saat ilerletiliyor...")
 		for i in range(hours):
 			# SADECE bir kere hour değişimi yap
 			tm.force_pass_hour()
 			# Kısa bekleme (animasyon için)
 			await get_tree().create_timer(0.5).timeout
-			print_debug("Uyku saati: ", i+1, "/", hours)
-	else:
-		print_debug("TimeManager bulunamadı!")
 	
 	# Fade out efekti
 	if final_fade:
-		print_debug("Fade out başlıyor...")
 		final_fade.fade_out(1.5)
 		await final_fade.fade_out_completed
 	
-	print_debug("Uyku bitti")
 	is_unconscious = false
 	is_sleeping = false
 	if not is_dead:
@@ -375,9 +356,6 @@ func die(reason_override: String = "") -> void:
 	
 	player_died.emit(reason, stats)
 
-# ==================================================
-# DEBUG FONKSİYONU - Hız kontrolü için
-# ==================================================
 func _unhandled_input(event: InputEvent) -> void:
 	if ui_blocked or is_dead or is_sleeping:
 		return
@@ -389,12 +367,3 @@ func _unhandled_input(event: InputEvent) -> void:
 		use_consumable("medkit")
 	elif event.is_action_pressed("use_energy_drink"):
 		use_consumable("energy_drink")
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("debug"):
-		print("🔧 DEBUG - Player:")
-		print("  - Velocity: ", velocity)
-		print("  - Speed: ", speed)
-		print("  - can_move: ", can_move)
-		print("  - ui_blocked: ", ui_blocked)
-		print("  - Position: ", position)

@@ -13,7 +13,6 @@ const MAX_ITEMS_DISPLAY = 8  # Sağda gösterilecek max item sayısı
 var displayed_items = []  # Gösterilecek item'ların listesi
 
 func _ready() -> void:
-	print("📦 InventoryManager hazır")
 	GameState.inventory_changed.connect(_on_inventory_changed)
 	_initialize_displayed_items()
 
@@ -29,7 +28,6 @@ func _initialize_displayed_items() -> void:
 	# Alfabetik sırala
 	displayed_items.sort_custom(func(a, b): return a.id < b.id)
 	
-	print("📦 Gösterilecek item'lar: ", displayed_items.size())
 
 func _on_inventory_changed() -> void:
 	_initialize_displayed_items()

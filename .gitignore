@@ -17,3 +17,6 @@ mono_crash.*.json
 
 # Godot editor temp files
 *.tmp
+
+# Dışa aktarma çıktıları
+build/
