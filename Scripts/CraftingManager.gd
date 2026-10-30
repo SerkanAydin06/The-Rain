@@ -66,8 +66,8 @@ var all_recipes: Dictionary = {
 		"craft_time": 3.0,
 		"unlocked": false,
 		"skill": "crafting",
-		"skill_level": 2,
-		"unlock_condition": "craft_5_items",
+		"skill_level": 1,
+		"unlock_condition": "craft_3_items",
 		"description": "Tamir ve inşaat aletleri"
 	},
 	
@@ -87,11 +87,114 @@ var all_recipes: Dictionary = {
 		"craft_time": 4.0,
 		"unlocked": false,
 		"skill": "electronics",
-		"skill_level": 3,
+		"skill_level": 2,
 		"unlock_condition": "find_blueprint_radio",
-		"description": "Radyo onarım parçası"
+		"description": "Radyo onarım parçası (telsiz için 3 gerekir)"
+	},
+	
+	# SU ARITMA - kimyasal ile
+	"water_purify": {
+		"name": "Su Arıt (Kimyasal)",
+		"category": "medical",
+		"tier": 1,
+		"materials": {"dirty_water": 2, "chemical": 1},
+		"result": "water",
+		"result_amount": 2,
+		"craft_time": 1.0,
+		"unlocked": true,
+		"skill": "medical",
+		"skill_level": 1,
+		"description": "Kirli suyu içilebilir hale getirir"
+	},
+	
+	# SU KAYNATMA - odun ile
+	"water_boil": {
+		"name": "Su Kaynat",
+		"category": "mechanical",
+		"tier": 1,
+		"materials": {"dirty_water": 1, "wood": 2},
+		"result": "water",
+		"result_amount": 1,
+		"craft_time": 1.0,
+		"unlocked": true,
+		"skill": "survival",
+		"skill_level": 1,
+		"description": "Odun yakarak kirli suyu kaynat"
+	},
+	
+	# GİYSİ YAMASI
+	"suit_patch": {
+		"name": "Koruyucu Giysi Yaması",
+		"category": "mechanical",
+		"tier": 1,
+		"materials": {"cloth": 3, "plastic": 2, "chemical": 1},
+		"result": "",
+		"result_amount": 0,
+		"effect": "repair_suit",
+		"effect_amount": 30,
+		"craft_time": 2.0,
+		"unlocked": true,
+		"skill": "crafting",
+		"skill_level": 1,
+		"description": "Koruyucu giysiyi %30 onarır"
+	},
+	
+	# YAĞMUR TOPLAYICI
+	"rain_collector": {
+		"name": "Yağmur Toplayıcı",
+		"category": "mechanical",
+		"tier": 1,
+		"materials": {"plastic": 3, "scrap": 3, "wood": 2},
+		"result": "",
+		"result_amount": 0,
+		"effect": "build_rain_collector",
+		"one_time": true,
+		"craft_time": 3.0,
+		"unlocked": true,
+		"skill": "survival",
+		"skill_level": 1,
+		"description": "Her gün 2 kirli su toplar"
+	},
+	
+	# ÇALIŞMA TEZGAHI YÜKSELTME
+	"workbench_upgrade_2": {
+		"name": "Tezgahı Geliştir (Tier 2)",
+		"category": "mechanical",
+		"tier": 1,
+		"materials": {"scrap": 6, "metal": 3, "wood": 4},
+		"requires_tool": "toolkit",
+		"result": "",
+		"result_amount": 0,
+		"effect": "workbench_tier",
+		"effect_amount": 2,
+		"one_time": true,
+		"craft_time": 4.0,
+		"unlocked": true,
+		"skill": "crafting",
+		"skill_level": 1,
+		"description": "Tier 2 tarifleri açar (alet çantası gerekir)"
+	},
+	"workbench_upgrade_3": {
+		"name": "Tezgahı Geliştir (Tier 3)",
+		"category": "mechanical",
+		"tier": 2,
+		"materials": {"metal": 4, "wire": 3, "component": 1, "electronic": 1},
+		"requires_tool": "toolkit",
+		"result": "",
+		"result_amount": 0,
+		"effect": "workbench_tier",
+		"effect_amount": 3,
+		"one_time": true,
+		"craft_time": 5.0,
+		"unlocked": true,
+		"skill": "crafting",
+		"skill_level": 1,
+		"description": "Tier 3 tarifleri açar (radyo parçası)"
 	}
 }
+
+const XP_PER_LEVEL := 20
+const MAX_SKILL_LEVEL := 5
 
 # ==================================================
 # PLAYER STATS & UNLOCKS
@@ -104,7 +207,9 @@ var player_stats: Dictionary = {
 		"crafting": 1,
 		"survival": 1
 	},
-	"discovered_recipes": ["medkit", "battery"],  # Başlangıçta açık olanlar
+	"skill_xp": {},
+	"discovered_recipes": [],  # _check_recipe_unlocks ile doldurulur
+	"built": [],  # one_time tarifler
 	"found_blueprints": [],
 	"total_crafts": 0
 }
@@ -116,6 +221,7 @@ var current_crafting_item: String = ""
 var crafting_progress: float = 0.0
 var is_crafting: bool = false
 var current_workbench_tier: int = 1
+var workbench_level: int = 1  # Yükseltmelerle kalıcı olarak artar
 
 # ==================================================
 # LIFECYCLE
@@ -191,7 +297,13 @@ func can_craft(recipe_id: String) -> Dictionary:
 		]
 		return result
 	
-	# 3. Malzeme kontrolü
+	# 3. Alet kontrolü (harcanmaz)
+	var tool: String = recipe.get("requires_tool", "")
+	if not tool.is_empty() and not GameState.has_item(tool):
+		result["message"] = "Gerekli alet: %s" % InventoryManager.get_item_display_name(tool)
+		return result
+	
+	# 4. Malzeme kontrolü
 	var all_materials_ok = true
 	for material in recipe["materials"]:
 		var required = recipe["materials"][material]
@@ -276,12 +388,16 @@ func start_crafting(recipe_id: String, workbench_tier: int = 1) -> Dictionary:
 func _perform_crafting(craft_time: float, workbench_tier: int) -> void:
 	print("   🔄 Crafting işlemi başladı...")
 	
-	var elapsed = 0.0
-	while elapsed < craft_time and is_crafting:
-		# Her saat başı progress güncelle
-		await get_tree().create_timer(1.0).timeout  # Gerçek süre için 1 saniye bekle
-		elapsed += 1.0  # Oyun saati olarak 1 saat
-		crafting_progress = elapsed / craft_time
+	# Her craft saati oyun saatini de ilerletir
+	var total_hours: int = max(1, ceili(craft_time))
+	var time_manager = get_tree().get_first_node_in_group("time_manager")
+	var elapsed := 0
+	while elapsed < total_hours and is_crafting:
+		await get_tree().create_timer(0.6).timeout
+		elapsed += 1
+		if time_manager and time_manager.has_method("force_pass_hour"):
+			time_manager.force_pass_hour()
+		crafting_progress = float(elapsed) / total_hours
 		
 		# Progress event'i gönder (UI güncellemek için)
 		materials_updated.emit()
@@ -315,6 +431,10 @@ func _complete_crafting(recipe_id: String, workbench_tier: int) -> Dictionary:
 	
 	print("   🎲 Başarı şansı: %d%%, Zar: %.2f" % [int(success_chance * 100), random_roll])
 	
+	# İnşaat/yükseltme/onarım işleri başarısız olmaz
+	if recipe.has("effect"):
+		random_roll = 0.0
+	
 	if random_roll > success_chance:
 		# BAŞARISIZ
 		result["success"] = false
@@ -344,14 +464,20 @@ func _complete_crafting(recipe_id: String, workbench_tier: int) -> Dictionary:
 		else:
 			result["message"] = "Craft başarılı"
 		
-		# Envantere ekle
-		GameState.add_to_inventory(item_name, final_amount)
+		# Efekt veya envantere ekle
+		if recipe.has("effect"):
+			final_amount = 1
+			result["message"] = _apply_effect(recipe_id, recipe)
+		else:
+			GameState.add_to_inventory(item_name, final_amount)
 		
 		# İstatistikleri güncelle
 		_increment_craft_count(recipe_id)
 		_add_skill_xp(recipe["skill"], recipe["tier"])
 		
 		result["success"] = true
+		if item_name.is_empty():
+			item_name = recipe["name"]
 		result["item"] = item_name
 		result["amount"] = final_amount
 		
@@ -400,7 +526,7 @@ func _calculate_craft_quality(recipe: Dictionary, workbench_tier: int) -> float:
 
 func _calculate_success_chance(recipe: Dictionary, workbench_tier: int, quality: float) -> float:
 	"""Başarı şansını hesapla"""
-	var base_chance = 0.85  # %85
+	var base_chance = 0.9  # %90
 	
 	# Workbench bonusu (%5 her tier)
 	var workbench_bonus = (workbench_tier - 1) * 0.05
@@ -437,7 +563,14 @@ func _add_skill_xp(skill_name: String, tier: int) -> void:
 	
 	# Tier'a göre XP (T1: 10, T2: 20, T3: 30)
 	var xp_gain = tier * 10
-	# Burada XP sistemi eklenebilir
+	var xp: int = player_stats["skill_xp"].get(skill_name, 0) + xp_gain
+	var level: int = player_stats["skills"][skill_name]
+	while xp >= level * XP_PER_LEVEL and level < MAX_SKILL_LEVEL:
+		xp -= level * XP_PER_LEVEL
+		level += 1
+		SurvivalManager.notify("Yetenek gelişti: %s Seviye %d" % [skill_name, level])
+	player_stats["skill_xp"][skill_name] = xp
+	player_stats["skills"][skill_name] = level
 	
 	print("🎯 Skill XP: %s +%d (Mevcut: %d)" % [
 		skill_name, xp_gain, player_stats["skills"][skill_name]
@@ -456,6 +589,8 @@ func _check_recipe_unlocks() -> void:
 			continue
 		
 		var recipe = all_recipes[recipe_id]
+		if recipe_id in player_stats["built"]:
+			continue
 		if _is_recipe_unlocked(recipe):
 			player_stats["discovered_recipes"].append(recipe_id)
 			newly_unlocked.append(recipe_id)
@@ -473,10 +608,13 @@ func _is_recipe_unlocked(recipe: Dictionary) -> bool:
 	# "craft_5_items" gibi koşullar
 	if unlock_condition.begins_with("craft_"):
 		var parts = unlock_condition.split("_")
+		# "craft_3_items" -> toplam craft sayısı
+		if parts.size() == 3 and parts[2] == "items":
+			return player_stats["total_crafts"] >= int(parts[1])
+		# "craft_medkit_5" -> belirli tarif sayısı
 		if parts.size() >= 3:
-			var target_recipe = parts[1]
-			var required_count = int(parts[2])
-			
+			var required_count = int(parts[parts.size() - 1])
+			var target_recipe = "_".join(parts.slice(1, parts.size() - 1))
 			var crafted_count = player_stats["crafted_items"].get(target_recipe, 0)
 			return crafted_count >= required_count
 	
@@ -517,8 +655,60 @@ func discover_blueprint(blueprint_id: String) -> void:
 
 func set_workbench_tier(tier: int) -> void:
 	"""Workbench tier'ını ayarla"""
-	current_workbench_tier = tier
-	print("🛠️ Workbench Tier ayarlandı: ", tier)
+	current_workbench_tier = max(tier, workbench_level)
+	print("🛠️ Workbench Tier ayarlandı: ", current_workbench_tier)
+
+func _apply_effect(recipe_id: String, recipe: Dictionary) -> String:
+	if recipe.get("one_time", false):
+		player_stats["built"].append(recipe_id)
+		player_stats["discovered_recipes"].erase(recipe_id)
+	match recipe["effect"]:
+		"repair_suit":
+			var amount: int = recipe.get("effect_amount", 30)
+			GameState.suit_durability = min(GameState.suit_durability + amount, 100)
+			GameState.inventory_changed.emit()
+			return "Giysi onarıldı: %%%d" % GameState.suit_durability
+		"build_rain_collector":
+			SurvivalManager.rain_collector_built = true
+			return "Yağmur toplayıcı kuruldu! Her gün kirli su toplayacak."
+		"workbench_tier":
+			workbench_level = max(workbench_level, int(recipe.get("effect_amount", 2)))
+			current_workbench_tier = max(current_workbench_tier, workbench_level)
+			return "Tezgah Tier %d oldu!" % workbench_level
+	return "Tamamlandı"
+
+# ==================================================
+# KAYIT
+# ==================================================
+func get_save_data() -> Dictionary:
+	return {"player_stats": player_stats.duplicate(true), "workbench_level": workbench_level}
+
+func load_save_data(data: Dictionary) -> void:
+	reset()
+	if data.has("player_stats"):
+		for key in data["player_stats"]:
+			player_stats[key] = data["player_stats"][key]
+		# JSON sayıları float döner
+		for skill in player_stats["skills"]:
+			player_stats["skills"][skill] = int(player_stats["skills"][skill])
+		player_stats["total_crafts"] = int(player_stats.get("total_crafts", 0))
+	workbench_level = int(data.get("workbench_level", 1))
+	_check_recipe_unlocks()
+
+func reset() -> void:
+	player_stats = {
+		"crafted_items": {},
+		"skills": {"medical": 1, "electronics": 1, "crafting": 1, "survival": 1},
+		"skill_xp": {},
+		"discovered_recipes": [],
+		"found_blueprints": [],
+		"built": [],
+		"total_crafts": 0
+	}
+	workbench_level = 1
+	current_workbench_tier = 1
+	is_crafting = false
+	_check_recipe_unlocks()
 
 # ==================================================
 # SIGNAL HANDLERS

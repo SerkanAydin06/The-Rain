@@ -6,6 +6,7 @@ extends Node
 # ==================================================
 signal inventory_changed
 signal day_passed(day: int)
+signal hour_passed(hour: int, day: int)
 
 # ==================================================
 # OYUN DEĞİŞKENLERİ
@@ -28,6 +29,8 @@ var inventory = {
 	"medkit": 1,            # 🩹 Medkit
 	"battery": 3,           # 🔋 Pil
 	"energy_drink": 2,      # 🥤 Enerji İçeceği
+	"water": 4,             # 💧 Temiz Su
+	"dirty_water": 0,       # 🟤 Kirli Su
 	
 	# ========== TEMEL MALZEMELER (4) ==========
 	"wood": 10,             # 🪵 Ahşap
@@ -63,6 +66,8 @@ var stack_limits = {
 	"medkit": 5,
 	"battery": 15,
 	"energy_drink": 10,
+	"water": 20,
+	"dirty_water": 20,
 	
 	# Temel malzemeler
 	"wood": 50,
@@ -86,7 +91,7 @@ var stack_limits = {
 	"medkit_crafted": 3,
 	"battery_crafted": 5,
 	"toolkit": 2,
-	"radio_part": 1,
+	"radio_part": 3,
 }
 
 # ==================================================
@@ -99,7 +104,9 @@ func save_game() -> void:
 		"total_loot": total_loot,
 		"suit_durability": suit_durability,
 		"inventory": inventory,
-		"player_stats": _collect_player_stats()
+		"player_stats": _collect_player_stats(),
+		"survival": SurvivalManager.get_save_data(),
+		"crafting": CraftingManager.get_save_data()
 	}
 	
 	var file = FileAccess.open("user://savegame.save", FileAccess.WRITE)
@@ -132,6 +139,8 @@ func load_game() -> bool:
 	current_day = int(save_data.get("current_day", 1))
 	current_hour = int(save_data.get("current_hour", 0))
 	player_stats = save_data.get("player_stats", {})
+	SurvivalManager.load_save_data(save_data.get("survival", {}))
+	CraftingManager.load_save_data(save_data.get("crafting", {}))
 	total_loot = save_data.get("total_loot", 0)
 	suit_durability = save_data.get("suit_durability", 100)
 	
@@ -153,7 +162,8 @@ func _collect_player_stats() -> Dictionary:
 	var player = get_tree().get_first_node_in_group("player")
 	if player == null or not "health" in player:
 		return player_stats
-	return {"health": player.health, "hunger": player.hunger, "energy": player.energy}
+	return {"health": player.health, "hunger": player.hunger,
+		"energy": player.energy, "thirst": player.thirst}
 
 func reset_game() -> void:
 	game_paused = false
@@ -170,6 +180,8 @@ func reset_game() -> void:
 		"medkit": 1,
 		"battery": 3,
 		"energy_drink": 2,
+		"water": 4,
+		"dirty_water": 0,
 		"wood": 10,
 		"stone": 8,
 		"scrap": 15,
@@ -188,6 +200,8 @@ func reset_game() -> void:
 		"radio_part": 0,
 	}
 	
+	SurvivalManager.reset()
+	CraftingManager.reset()
 	print("🔄 Oyun durumu sıfırlandı!")
 
 func add_to_inventory(item: String, amount: int = 1) -> int:

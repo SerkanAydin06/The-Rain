@@ -146,7 +146,8 @@ func _show_crafting_interface() -> void:
 			_show_fallback_message()
 			return
 	
-	# 3. CraftingManager'a workbench tier'ını bildir
+	# 3. CraftingManager'a workbench tier'ını bildir (yükseltmeler kalıcı)
+	workbench_tier = max(workbench_tier, CraftingManager.workbench_level)
 	if CraftingManager:
 		CraftingManager.set_workbench_tier(workbench_tier)
 	

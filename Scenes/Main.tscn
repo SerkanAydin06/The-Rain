@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://c4i311e2ynwgq" path="res://Scenes/OutsidePanel.tscn" id="15_kpo4j"]
 [ext_resource type="PackedScene" uid="uid://btiiydog5u50k" path="res://Scenes/ExitPanel.tscn" id="16_4n42c"]
 [ext_resource type="PackedScene" uid="uid://cl51iqdppqegt" path="res://Scenes/DialogueUI.tscn" id="17_c5snn"]
-[ext_resource type="Script" uid="uid://dv5w25hqudd4r" path="res://Scripts/GameState.gd" id="21_gdcyb"]
 [ext_resource type="PackedScene" uid="uid://c1qec0o5b6us5" path="res://Scenes/UI.tscn" id="22_oa6sj"]
 [ext_resource type="Script" uid="uid://c1rtb1mibqjmu" path="res://Scripts/TimeLabel.gd" id="23_0f1tp"]
 [ext_resource type="Texture2D" uid="uid://cjpjln2b3eny7" path="res://kaplama/zemin1.png" id="39_6ehlx"]
@@ -68,9 +67,6 @@ time_manager_path = NodePath("../../World/TimeManager")
 [node name="ExitPanel" parent="UI" instance=ExtResource("16_4n42c")]
 
 [node name="DialogueUI" parent="UI" instance=ExtResource("17_c5snn")]
-
-[node name="GameState" type="Node" parent="."]
-script = ExtResource("21_gdcyb")
 
 [node name="ArkaPlanlar" type="Node2D" parent="."]
 

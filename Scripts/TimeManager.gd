@@ -34,6 +34,7 @@ func _pass_hour() -> void:
 		GameState.day_passed.emit(current_day)
 
 	GameState.current_hour = current_hour
+	GameState.hour_passed.emit(current_hour, current_day)
 	hour_changed.emit(current_hour, current_day)
 
 func force_pass_hour() -> void:

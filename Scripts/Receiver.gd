@@ -94,7 +94,7 @@ func _on_interact() -> void:
 	is_interaction_cooldown = true
 	
 	# Durumu değiştir
-	opened = not opened
+	opened = true
 	
 	# InteractionHUD hint'ini kapat
 	var hud = get_node_or_null("/root/InteractionHUD")
@@ -121,7 +121,7 @@ func _manage_dialogue() -> void:
 
 func _show_radio_message() -> void:
 	"""Telsiz mesajını göster"""
-	var message = "Telsiz cızırtıyla açılıyor...\n\n'Eğer beni duyuyorsan, cevap ver.'"
+	var message = SurvivalManager.use_radio()
 	
 	if dialogue.has_method("show_dialogue_for_time"):
 		dialogue.show_dialogue_for_time(message, 3.0)

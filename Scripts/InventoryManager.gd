@@ -56,7 +56,9 @@ func get_item_display_name(item_id: String) -> String:
 		"scrap": return "🔩 Parça"
 		"wood": return "🪵 Tahta"
 		"cloth": return "🧵 Kumaş"
-		"water": return "💧 Su"
+		"water": return "💧 Temiz Su"
+		"dirty_water": return "🟤 Kirli Su"
+		"stone": return "🪨 Taş"
 		"plastic": return "🥤 Plastik"
 		"metal": return "⚙️ Metal"
 		"chemical": return "🧪 Kimyasal"
@@ -68,4 +70,6 @@ func get_item_display_name(item_id: String) -> String:
 		"fuel": return "⛽ Yakıt"
 		"medicine": return "💊 İlaç"
 		"component": return "⚡ Bileşen"
+		"toolkit": return "🧰 Alet Çantası"
+		"radio_part": return "📡 Radyo Parçası"
 		_: return "📦 " + item_id.capitalize()

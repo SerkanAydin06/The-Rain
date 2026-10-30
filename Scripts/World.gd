@@ -17,6 +17,11 @@ func _ready():
 	# 3. TimeManager bağlantısı
 	_connect_to_time_system()
 	
+	# 4. Yeni oyunda hedef ve kontroller
+	if GameState.current_day == 1 and GameState.current_hour == 0:
+		SurvivalManager.notify("Zehirli yağmur dinmiyor. Hayatta kal ve telsizi onar.\n3 radyo parçası + 1 pil ile yardım çağır.")
+		SurvivalManager.notify("E: Etkileşim  |  1: Ye  2: İç  3: Medkit  4: Enerji İçeceği")
+	
 	print("✅ World hazır!")
 
 func _setup_global_darkness():
@@ -64,9 +69,18 @@ func _setup_connections():
 		
 		# Yeni bağlantıyı yap
 		player.player_died.connect(death_screen.show_death_screen)
+	
+	# Kurtarılma -> zafer ekranı
+	if death_screen and not SurvivalManager.rescue_arrived.is_connected(_on_rescue_arrived):
+		SurvivalManager.rescue_arrived.connect(_on_rescue_arrived)
 		print("     ✅ DeathScreen bağlandı (show_death_screen)")
 	
 	print("   🔗 Bağlantılar tamamlandı")
+
+func _on_rescue_arrived() -> void:
+	var death_screen = get_tree().get_first_node_in_group("death_screen")
+	if death_screen:
+		death_screen.show_victory_screen(SurvivalManager.get_stats())
 
 func _connect_to_time_system():
 	var time_manager = get_tree().get_first_node_in_group("time_manager")

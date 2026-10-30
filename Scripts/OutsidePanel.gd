@@ -11,13 +11,18 @@ var player: CharacterBody2D
 var hours_left := 0
 # last_collected: Sadece bu gezide toplananları tutar
 var last_collected := {}
-# Dışarıda bulunabilecek eşyalar (craft edilen ürünler hariç)
-const LOOT_POOL := [
-	"food", "medkit", "battery", "energy_drink",
-	"wood", "stone", "scrap", "cloth",
-	"wire", "plastic", "metal", "chemical",
-	"electronic", "fuel", "medicine", "component",
-]
+# Dışarıda bulunabilecek eşyalar ve ağırlıkları (craft edilen ürünler hariç)
+const LOOT_TABLE := {
+	"common": ["food", "dirty_water", "wood", "stone", "scrap", "cloth", "plastic"],
+	"uncommon": ["water", "battery", "wire", "metal", "chemical", "energy_drink"],
+	"rare": ["medkit", "electronic", "fuel", "medicine", "component"],
+}
+const BLUEPRINT_MIN_DAY := 2
+const BLUEPRINT_CHANCE := 0.06
+
+var trip_hours := 0
+var hour_index := 0
+var risk := 0
 
 func _ready():
 	hide()
@@ -36,6 +41,9 @@ func start_outside(hours: int) -> void:
 		return
 
 	hours_left = hours
+	trip_hours = hours
+	hour_index = 0
+	risk = SurvivalManager.get_outside_risk(hours)
 	loot_log.clear()
 
 	show()
@@ -97,53 +105,76 @@ func _run_hours():
 	if player.health <= 0:
 		hide()
 		GameState.game_paused = false
-		player.die()
+		SurvivalManager.record_trip(hour_index)
+		player.die("outside")
 	else:
+		SurvivalManager.record_trip(trip_hours)
 		GameState.save_game()
 	print_debug("Dışarı çıkış simülasyonu tamamlandı")
 
 func _simulate_hour():
-	# İstatistik düşüşleri
+	hour_index += 1
+	
+	# İstatistik düşüşleri (dışarısı yorucu)
 	player.hunger = clamp(player.hunger - 5, 0, 100)
+	player.thirst = clamp(player.thirst - 6, 0, 100)
 	player.energy = clamp(player.energy - 8, 0, 100)
 	if player.hunger <= 0:
 		player.health = clamp(player.health - 5, 0, 100)
+	if player.thirst <= 0:
+		player.health = clamp(player.health - 8, 0, 100)
 	
-	var old_suit = GameState.suit_durability
-	GameState.suit_durability = max(GameState.suit_durability - 1, 0)
-	print_debug("Suit azaldı: ", old_suit, " -> ", GameState.suit_durability)
+	# Zehirli yağmur giysiyi aşındırır
+	var wear := 3 if SurvivalManager.storm_active else 2
+	GameState.suit_durability = max(GameState.suit_durability - wear, 0)
 	
-	# HUD'u hemen güncelle
+	# Tehlike: risk yüksek, giysi zayıfsa daha sık yaralanırsın
+	var injury_chance := clampf(risk / 100.0 * (1.3 - GameState.suit_durability / 100.0), 0.03, 0.9)
+	if randf() < injury_chance:
+		var dmg := randi_range(6, 12)
+		player.health = clamp(player.health - dmg, 0, 100)
+		loot_log.append_text("[color=red]Yaralandın! -%d Can[/color]\n" % dmg)
+	if GameState.suit_durability <= 0:
+		player.health = clamp(player.health - 6, 0, 100)
+		loot_log.append_text("[color=red]Giysi delindi, yağmur yakıyor! -6 Can[/color]\n")
+	
 	player.update_ui()
 	
-	# Risk kontrolü
-	var risk_roll = randi_range(0, 100)
-	print_debug("Risk kontrolü - Zar: ", risk_roll, " vs Suit: ", GameState.suit_durability)
+	# Plan (blueprint) şansı
+	if GameState.current_day >= BLUEPRINT_MIN_DAY \
+			and not "blueprint_radio" in CraftingManager.player_stats["found_blueprints"] \
+			and randf() < BLUEPRINT_CHANCE * hour_index:
+		CraftingManager.discover_blueprint("blueprint_radio")
+		loot_log.append_text("[color=cyan]📜 Radyo parçası planı buldun![/color]\n")
 	
-	if risk_roll > GameState.suit_durability:
-		player.health = clamp(player.health - 5, 0, 100)
-		loot_log.append_text("[color=red]Yaralandın![/color]\n")
-		print_debug("Yaralandı! HP: ", player.health)
-
-	# Loot Mekaniği
-	var loot_chance = randi_range(0, 100)
-	if loot_chance > 70: # %30 ihtimal
-		var found_item: String = LOOT_POOL[randi() % LOOT_POOL.size()]
+	# Loot: her saat %45 şans, uzun gezilerde nadir eşya ihtimali artar
+	if randf() < 0.45:
+		var rare_chance := 0.05 + 0.03 * hour_index
+		var roll := randf()
+		var pool: Array = LOOT_TABLE["common"]
+		if roll < rare_chance:
+			pool = LOOT_TABLE["rare"]
+		elif roll < rare_chance + 0.35:
+			pool = LOOT_TABLE["uncommon"]
+		var found_item: String = pool[randi() % pool.size()]
+		var amount := 1 if pool != LOOT_TABLE["common"] else randi_range(1, 2)
+		var name := InventoryManager.get_item_display_name(found_item)
 		
 		# Kalıcı envantere ekle (stack limitine uyar, sinyali gönderir)
-		var added: int = GameState.add_to_inventory(found_item, 1)
+		var added: int = GameState.add_to_inventory(found_item, amount)
 		if added > 0:
 			GameState.total_loot += added
 			last_collected[found_item] = last_collected.get(found_item, 0) + added
-			loot_log.append_text("Bulunan: [color=yellow]%s (+1)[/color]\n" % found_item)
+			loot_log.append_text("Bulunan: [color=yellow]%s (+%d)[/color]\n" % [name, added])
 		else:
-			loot_log.append_text("Bulunan: [color=gray]%s (çanta dolu)[/color]\n" % found_item)
+			loot_log.append_text("Bulunan: [color=gray]%s (çanta dolu)[/color]\n" % name)
 
 func _update_ui():
 	lbl_time.text = "Kalan Süre: %d saat" % hours_left
-	lbl_stats.text = "HP: %d | Açlık: %d | Enerji: %d" % [
+	lbl_stats.text = "HP: %d | Açlık: %d | Su: %d | Enerji: %d" % [
 		player.health,
 		player.hunger,
+		player.thirst,
 		player.energy
 	]
 	lbl_suit.text = "Suit Koruması: %% %d" % GameState.suit_durability

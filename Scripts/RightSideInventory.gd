@@ -212,6 +212,17 @@ func update_display() -> void:
 	# Ayırıcı
 	_add_separator()
 	
+	# 0. SU
+	_add_category_title("💧 SU")
+	var water_grid = GridContainer.new()
+	water_grid.columns = 4
+	water_grid.custom_minimum_size = Vector2(0, 60)
+	for item_id in ["water", "dirty_water"]:
+		water_grid.add_child(_create_material_box(item_id, GameState.inventory.get(item_id, 0), "consumable"))
+	items_container.add_child(water_grid)
+	
+	_add_separator()
+	
 	# 1. MALZEMELER KATEGORİSİ
 	_add_category_title("🛠️ MALZEMELER")
 	
@@ -304,6 +315,8 @@ func _create_material_box(item_id: String, amount: int, category: String) -> Con
 
 func _get_item_emoji(item_id: String) -> String:
 	match item_id:
+		"water": return "💧"
+		"dirty_water": return "🟤"
 		"wood": return "🪵"
 		"stone": return "🪨"
 		"scrap": return "🔩"
@@ -469,6 +482,9 @@ func _get_item_display_name(item_id: String) -> String:
 		"fuel": "⛽ Yakıt",
 		"medicine": "💊 İlaç",
 		"component": "⚡ Parça",
+		
+		"water": "💧 Temiz Su",
+		"dirty_water": "🟤 Kirli Su",
 		
 		# Craft edilmiş
 		"medkit_crafted": "🩹 Yapay Medkit",
