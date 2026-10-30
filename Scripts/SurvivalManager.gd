@@ -88,6 +88,24 @@ func radio_status_text() -> String:
 	return "Telsiz bozuk. Onarım: %d/%d radyo parçası.\nRadyo parçası planı dışarıda bulunabilir." % [
 		radio_parts_installed, RADIO_PARTS_REQUIRED]
 
+func objective_text() -> String:
+	"""HUD hedef satırı"""
+	if game_won:
+		return "Kurtarıldın!"
+	if radio_called:
+		return "Kurtarma ekibini bekle: %d gün" % max(rescue_day - GameState.current_day, 0)
+	if radio_parts_installed >= RADIO_PARTS_REQUIRED:
+		return "Telsizden yardım çağır (1 pil gerekir)"
+	var have := GameState.get_item_count("radio_part")
+	var text := "Telsizi onar: %d/%d parça takıldı" % [radio_parts_installed, RADIO_PARTS_REQUIRED]
+	if have > 0:
+		text += "\nÇantanda %d parça var, telsize götür" % have
+	elif not "blueprint_radio" in CraftingManager.player_stats["found_blueprints"]:
+		text += "\nDışarıda radyo parçası planını ara"
+	else:
+		text += "\nTezgahta radyo parçası üret (Tier 3)"
+	return text
+
 func use_radio() -> String:
 	"""Telsizle etkileşim: parça tak, onarıldıysa yardım çağır."""
 	if game_won or radio_called:

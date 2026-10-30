@@ -1,302 +1,142 @@
+# MainMenu.gd - Ana menü
 extends CanvasLayer
 
-# ==================================================
-# UI REFERENCES
-# ==================================================
-@onready var background: ColorRect = $Control/Background  # ⭐ ColorRect olarak değiştir
-@onready var title_label: Label = $Control/CenterContainer/VBoxContainer/TitleLabel
-@onready var buttons_vbox: VBoxContainer = $Control/CenterContainer/VBoxContainer/ButtonsVBox
-@onready var new_game_btn: Button = $Control/CenterContainer/VBoxContainer/ButtonsVBox/NewGameBtn
-@onready var load_game_btn: Button = $Control/CenterContainer/VBoxContainer/ButtonsVBox/LoadGameBtn
-@onready var settings_btn: Button = $Control/CenterContainer/VBoxContainer/ButtonsVBox/SettingsBtn
-@onready var quit_btn: Button = $Control/CenterContainer/VBoxContainer/ButtonsVBox/QuitBtn
+const SAVE_PATH := "user://savegame.save"
+const GAME_SCENE := "res://Scenes/Main.tscn"
+
+@onready var root_control: Control = $Control
+@onready var background: TextureRect = $Control/Background
+@onready var content: VBoxContainer = $Control/Content
+@onready var title_label: Label = $Control/Content/TitleLabel
+@onready var buttons_vbox: VBoxContainer = $Control/Content/ButtonsVBox
+@onready var continue_btn: Button = $Control/Content/ButtonsVBox/ContinueBtn
+@onready var new_game_btn: Button = $Control/Content/ButtonsVBox/NewGameBtn
+@onready var settings_btn: Button = $Control/Content/ButtonsVBox/SettingsBtn
+@onready var quit_btn: Button = $Control/Content/ButtonsVBox/QuitBtn
+@onready var save_info: Label = $Control/Content/SaveInfo
 @onready var version_label: Label = $Control/VersionLabel
+@onready var confirm: Control = $Control/Confirm
+@onready var confirm_yes: Button = $Control/Confirm/Center/Card/VBox/Footer/YesBtn
+@onready var confirm_no: Button = $Control/Confirm/Center/Card/VBox/Footer/NoBtn
+@onready var settings_panel: Control = $Control/SettingsPanel
+@onready var fade: ColorRect = $Control/Fade
 
-# ==================================================
-# CONSTANTS
-# ==================================================
-const BUTTON_COLORS := {
-	"normal": "#3498db",
-	"hover": "#2980b9",
-	"pressed": "#1c5a7d"
-}
+var _busy := false
 
-# ==================================================
-# READY
-# ==================================================
 func _ready() -> void:
-	print("MAIN MENU - _ready() BAŞLADI")
-	
-	# Kontroller
-	print("🔍 Node Kontrolleri:")
-	print("  - background:", "✅" if background else "❌")
-	print("  - title_label:", "✅" if title_label else "❌")
-	print("  - buttons_vbox:", "✅" if buttons_vbox else "❌")
-	print("  - Buton sayısı:", buttons_vbox.get_child_count() if buttons_vbox else 0)
-	
-	# Buton isimlerini yazdır
-	if buttons_vbox:
-		for i in range(buttons_vbox.get_child_count()):
-			var btn = buttons_vbox.get_child(i)
-			print("    - Buton", i, ":", btn.name, "(", btn.text, ")")
-	
-	# Setup fonksiyonları
-	_setup_background()
-	_setup_buttons()
-	
-	# Buton bağlantıları
+	get_tree().paused = false
+	version_label.text = "v%s" % ProjectSettings.get_setting("application/config/version", "1.1")
+
+	continue_btn.pressed.connect(_on_continue_pressed)
 	new_game_btn.pressed.connect(_on_new_game_pressed)
-	load_game_btn.pressed.connect(_on_load_game_pressed)
 	settings_btn.pressed.connect(_on_settings_pressed)
 	quit_btn.pressed.connect(_on_quit_pressed)
-	
-	version_label.text = "v1.0 - Survival Shelter"
-	
-	print("🔄 Animasyon başlatılıyor...")
-	_start_entrance_animation()
-	print("_ready() tamamlandı")
+	confirm_yes.pressed.connect(_start_new_game)
+	confirm_no.pressed.connect(func(): confirm.hide(); new_game_btn.grab_focus())
+	settings_panel.closed.connect(func(): settings_btn.grab_focus())
 
-# ==================================================
-# BACKGROUND SETUP
-# ==================================================
-func _setup_background() -> void:
-	"""Arkaplanı ayarla"""
-	# Gradient efekti için shader kullanalım
-	background.color = Color("#1a2530")  # Koyu mavi-gri
-	
-	# İsteğe bağlı: Gradient shader ekle
-	var material = ShaderMaterial.new()
-	var shader = Shader.new()
-	shader.code = """
-	shader_type canvas_item;
-	
-	void fragment() {
-		// Basit gradient: üstten alta koyulaşan
-		float gradient = 1.0 - UV.y * 0.3;
-		COLOR = vec4(0.1725, 0.2431, 0.3137, 1.0) * gradient;
-	}
-	"""
-	material.shader = shader
-	background.material = material
+	_refresh_save_state()
+	_play_intro()
+	_lightning_loop()
 
-# ==================================================
-# BUTON AYARLARI
-# ==================================================
-func _setup_buttons() -> void:
-	# Tüm butonlara ortak stil uygula
-	var buttons := [new_game_btn, load_game_btn, settings_btn, quit_btn]
-	
-	for button in buttons:
-		# Custom minimum size
-		button.custom_minimum_size = Vector2(300, 60)
-		
-		# Font ayarları
-		button.add_theme_font_size_override("font_size", 24)
-		
-		# StyleBox ayarları
-		var style_normal = StyleBoxFlat.new()
-		style_normal.bg_color = Color(BUTTON_COLORS.normal)
-		style_normal.corner_radius_top_left = 10
-		style_normal.corner_radius_top_right = 10
-		style_normal.corner_radius_bottom_left = 10
-		style_normal.corner_radius_bottom_right = 10
-		style_normal.border_width_bottom = 3
-		style_normal.border_color = Color("#2c3e50")
-		
-		var style_hover = style_normal.duplicate()
-		style_hover.bg_color = Color(BUTTON_COLORS.hover)
-		
-		var style_pressed = style_normal.duplicate()
-		style_pressed.bg_color = Color(BUTTON_COLORS.pressed)
-		
-		button.add_theme_stylebox_override("normal", style_normal)
-		button.add_theme_stylebox_override("hover", style_hover)
-		button.add_theme_stylebox_override("pressed", style_pressed)
-		
-		# Font color
-		button.add_theme_color_override("font_color", Color("#ecf0f1"))
-		button.add_theme_color_override("font_hover_color", Color("#ffffff"))
-		button.add_theme_color_override("font_pressed_color", Color("#bdc3c7"))
+func _refresh_save_state() -> void:
+	var has_save := FileAccess.file_exists(SAVE_PATH)
+	continue_btn.visible = has_save
+	save_info.text = ""
+	if has_save:
+		var info := _read_save_summary()
+		if not info.is_empty():
+			save_info.text = info
+	(continue_btn if has_save else new_game_btn).grab_focus()
+
+func _read_save_summary() -> String:
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if not file:
+		return ""
+	var data = JSON.parse_string(file.get_as_text())
+	if typeof(data) != TYPE_DICTIONARY:
+		return ""
+	var day := int(data.get("current_day", 1))
+	var hour := int(data.get("current_hour", 0))
+	return "Kayıt: Gün %d · %02d:00" % [day, hour]
 
 # ==================================================
 # ANİMASYONLAR
 # ==================================================
-func _start_entrance_animation() -> void:
-	print("🔵 Animasyon başlıyor...")
-	if not buttons_vbox or buttons_vbox.get_child_count() == 0:
-		_show_all_immediately()
-		return
-	
-	# ⭐ ÖNCE null kontrolü
-	if not title_label or not buttons_vbox or not version_label:
-		print("❌ UI elementleri bulunamadı!")
-		return
-	
-	# Tüm elementleri görünür yap
-	title_label.visible = true
-	buttons_vbox.visible = true
-	version_label.visible = true
-	
-	# Başlangıç durumu
-	title_label.modulate.a = 0.0
-	title_label.position.y += 80
-	
-	# Butonlar
-	for i in range(buttons_vbox.get_child_count()):
-		var button = buttons_vbox.get_child(i)
-		if button:
-			button.modulate.a = 0.0
-			button.position.x -= 50
-	
-	version_label.modulate.a = 0.0
-	
-	# Kısa bekleme
-	await get_tree().process_frame
-	
-	# ⭐ Tween oluştur ve TWEEPROPERTY EKLE
-	var tween = create_tween()
-	if not tween:
-		print("❌ Tween oluşturulamadı!")
-		_show_all_immediately()
-		return
-	
-	# ⭐ MUTLAKA tween_property EKLE
-	# 1. Başlık
-	tween.tween_property(title_label, "modulate:a", 1.0, 1.5)
-	tween.parallel().tween_property(title_label, "position:y", title_label.position.y - 80, 1.5)
-	
-	# 2. Butonlar (sırayla)
-	for i in range(buttons_vbox.get_child_count()):
-		var button = buttons_vbox.get_child(i)
-		if button:
-			var delay = 0.8 + (i * 0.2)
-			tween.parallel().tween_property(button, "modulate:a", 1.0, 0.8).set_delay(delay)
-			tween.parallel().tween_property(button, "position:x", button.position.x + 50, 0.8).set_delay(delay)
-	
-	# 3. Version
-	tween.parallel().tween_property(version_label, "modulate:a", 0.7, 0.6).set_delay(2.0)
-	
-	# 7. VERSION LABEL animasyonu
-	tween.tween_property(version_label, "modulate:a", 0.7, 0.6) \
-		.set_delay(2.0) \
-		.set_trans(Tween.TRANS_LINEAR)
-	
-	# 8. Animasyon bitince
-	tween.finished.connect(_on_animation_finished)
+func _play_intro() -> void:
+	fade.color.a = 1.0
+	content.modulate.a = 0.0
+	content.position.x -= 30
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(fade, "color:a", 0.0, 1.2)
+	tw.tween_property(content, "modulate:a", 1.0, 0.9).set_delay(0.3)
+	tw.tween_property(content, "position:x", content.position.x + 30, 0.9).set_delay(0.3)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
-func _show_all_immediately() -> void:
-	
-	title_label.modulate.a = 1.0
-	title_label.position.y = title_label.position.y - 80  # Normal pozisyona getir
-	
-	for i in range(buttons_vbox.get_child_count()):
-		var button = buttons_vbox.get_child(i)
-		button.modulate.a = 1.0
-		button.position.x = button.position.x + 50  # Normal pozisyona getir
-	
-	version_label.modulate.a = 0.7
-
-func _on_animation_finished() -> void:
-	print("🎉 Animasyon tamamlandı!")
-	# İsteğe bağlı: animasyon bitince bir şey yap
+func _lightning_loop() -> void:
+	# Arada bir şimşek çakması
+	while is_inside_tree():
+		await get_tree().create_timer(randf_range(6.0, 14.0)).timeout
+		if not is_inside_tree():
+			return
+		var mat := background.material as ShaderMaterial
+		var tw := create_tween()
+		tw.tween_method(func(v): mat.set_shader_parameter("flash", v), 0.0, 0.35, 0.05)
+		tw.tween_method(func(v): mat.set_shader_parameter("flash", v), 0.35, 0.0, 0.12)
+		tw.tween_method(func(v): mat.set_shader_parameter("flash", v), 0.0, 0.2, 0.05)
+		tw.tween_method(func(v): mat.set_shader_parameter("flash", v), 0.2, 0.0, 0.5)
 
 # ==================================================
-# BUTON FONKSİYONLARI
+# BUTONLAR
 # ==================================================
-func _on_new_game_pressed() -> void:
-	"""Yeni oyun başlat"""
-	print("Yeni oyun başlatılıyor...")
-	
-	# Save dosyasını temizle
-	_delete_save_file()
-	
-	# GameState'i resetle
-	GameState.reset_game()
-	
-	# Ana sahneyi yükle
-	_transition_to_game()
-
-func _on_load_game_pressed() -> void:
-	"""Kayıtlı oyunu yükle"""
-	print("Oyun yükleniyor...")
-	
-	# GameState'i bul
-	var game_state = get_node("/root/GameState")
-	if game_state and game_state.load_game():
-		game_state.game_paused = false
+func _on_continue_pressed() -> void:
+	if _busy:
+		return
+	if GameState.load_game():
+		GameState.game_paused = false
 		_transition_to_game()
 	else:
-		# Kayıt yoksa uyarı göster
-		print("Kayıtlı oyun bulunamadı!")
-		title_label.text = "KAYIT BULUNAMADI!"
-		await get_tree().create_timer(1.5).timeout
-		title_label.text = "THE RAIN"
+		save_info.text = "Kayıt okunamadı."
+		continue_btn.hide()
+		new_game_btn.grab_focus()
+
+func _on_new_game_pressed() -> void:
+	if _busy:
+		return
+	if FileAccess.file_exists(SAVE_PATH):
+		confirm.show()
+		confirm_no.grab_focus()
+	else:
+		_start_new_game()
+
+func _start_new_game() -> void:
+	confirm.hide()
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(SAVE_PATH)
+	GameState.reset_game()
+	_transition_to_game()
 
 func _on_settings_pressed() -> void:
-	"""Ayarlar menüsünü aç"""
-	print("Ayarlar açılıyor...")
-	
-	# Basit bir mesaj efekti
-	var original_text = settings_btn.text
-	settings_btn.text = "YAKINDA!"
-	
-	await get_tree().create_timer(1.0).timeout
-	settings_btn.text = original_text
+	settings_panel.open()
 
 func _on_quit_pressed() -> void:
-	"""Oyundan çık"""
-	print("Oyundan çıkılıyor...")
-	
-	# Butonları devre dışı bırak
-	_set_buttons_disabled(true)
-	
-	var control_node = $Control
-	if control_node:
-		var tween = create_tween()
-		tween.tween_property(control_node, "modulate:a", 0.0, 0.8)
-		await tween.finished
-	else:
-		await get_tree().create_timer(0.8).timeout
-	
-	# Çıkış
+	if _busy:
+		return
+	_busy = true
+	var tw := create_tween()
+	tw.tween_property(fade, "color:a", 1.0, 0.5)
+	await tw.finished
 	get_tree().quit()
 
-# ==================================================
-# HELPER FUNCTIONS
-# ==================================================
 func _transition_to_game() -> void:
-	"""Ana oyun sahnesine geçiş"""
-	print("Oyun sahnesine geçiliyor...")
-	
-	# Butonları devre dışı bırak
-	_set_buttons_disabled(true)
-	
-	# ⭐ DÜZELTME: CanvasLayer'ın değil, CONTROL'in modulate'ını kullan
-	# MainMenu bir CanvasLayer, Control değil
-	# Control node'unu bul:
-	var control_node = $Control
-	if control_node:
-		# Fade out animasyonu (Control üzerinde)
-		var tween = create_tween()
-		tween.tween_property(control_node, "modulate:a", 0.0, 0.8)
-		await tween.finished
-	else:
-		# Fallback: bekle
-		await get_tree().create_timer(0.8).timeout
-	
-	# Ana oyun sahnesini yükle
-	get_tree().change_scene_to_file("res://Scenes/Main.tscn")
+	_busy = true
+	var tw := create_tween()
+	tw.tween_property(fade, "color:a", 1.0, 0.7)
+	await tw.finished
+	get_tree().change_scene_to_file(GAME_SCENE)
 
-func _delete_save_file() -> void:
-	"""Save dosyasını sil (yeni oyun için)"""
-	var save_path = "user://savegame.save"
-	if FileAccess.file_exists(save_path):
-		DirAccess.remove_absolute(save_path)
-		print("Save dosyası silindi")
-
-func _set_buttons_disabled(disabled: bool) -> void:
-	"""Tüm butonları devre dışı bırak/aktif et"""
-	new_game_btn.disabled = disabled
-	load_game_btn.disabled = disabled
-	settings_btn.disabled = disabled
-	quit_btn.disabled = disabled
+func _unhandled_input(event: InputEvent) -> void:
+	if confirm.visible and event.is_action_pressed("ui_cancel"):
+		confirm.hide()
+		new_game_btn.grab_focus()
+		get_viewport().set_input_as_handled()

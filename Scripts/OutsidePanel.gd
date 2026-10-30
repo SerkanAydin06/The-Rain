@@ -2,10 +2,11 @@ extends Control
 
 @onready var black_bg = $BlackBG
 @onready var fade = $Fade
-@onready var lbl_time = $Panel/MarginContainer/VBoxContainer/TimeLabel
-@onready var lbl_stats = $Panel/MarginContainer/VBoxContainer/StatsLabel
-@onready var lbl_suit = $Panel/MarginContainer/VBoxContainer/SuitLabel
-@onready var loot_log = $Panel/MarginContainer/VBoxContainer/LootLog
+@onready var lbl_time: Label = $Center/Panel/VBox/TimeLabel
+@onready var lbl_stats: Label = $Center/Panel/VBox/StatsLabel
+@onready var lbl_suit: Label = $Center/Panel/VBox/SuitLabel
+@onready var progress: ProgressBar = $Center/Panel/VBox/Progress
+@onready var loot_log: RichTextLabel = $Center/Panel/VBox/LootLog
 
 var player: CharacterBody2D
 var hours_left := 0
@@ -47,7 +48,6 @@ func start_outside(hours: int) -> void:
 	loot_log.clear()
 
 	show()
-	self.z_index = 10
 	
 	await _fade_out()
 	await _run_hours()
@@ -133,10 +133,10 @@ func _simulate_hour():
 	if randf() < injury_chance:
 		var dmg := randi_range(6, 12)
 		player.health = clamp(player.health - dmg, 0, 100)
-		loot_log.append_text("[color=red]Yaralandın! -%d Can[/color]\n" % dmg)
+		loot_log.append_text("[color=#e0564d]Yaralandın! -%d Can[/color]\n" % dmg)
 	if GameState.suit_durability <= 0:
 		player.health = clamp(player.health - 6, 0, 100)
-		loot_log.append_text("[color=red]Giysi delindi, yağmur yakıyor! -6 Can[/color]\n")
+		loot_log.append_text("[color=#e0564d]Giysi delindi, yağmur yakıyor! -6 Can[/color]\n")
 	
 	player.update_ui()
 	
@@ -145,7 +145,7 @@ func _simulate_hour():
 			and not "blueprint_radio" in CraftingManager.player_stats["found_blueprints"] \
 			and randf() < BLUEPRINT_CHANCE * hour_index:
 		CraftingManager.discover_blueprint("blueprint_radio")
-		loot_log.append_text("[color=cyan]📜 Radyo parçası planı buldun![/color]\n")
+		loot_log.append_text("[color=#6fb7c9]📜 Radyo parçası planı buldun![/color]\n")
 	
 	# Loot: her saat %45 şans, uzun gezilerde nadir eşya ihtimali artar
 	if randf() < 0.45:
@@ -158,23 +158,25 @@ func _simulate_hour():
 			pool = LOOT_TABLE["uncommon"]
 		var found_item: String = pool[randi() % pool.size()]
 		var amount := 1 if pool != LOOT_TABLE["common"] else randi_range(1, 2)
-		var name := InventoryManager.get_item_display_name(found_item)
+		var item_name := InventoryManager.get_item_display_name(found_item)
 		
 		# Kalıcı envantere ekle (stack limitine uyar, sinyali gönderir)
 		var added: int = GameState.add_to_inventory(found_item, amount)
 		if added > 0:
 			GameState.total_loot += added
 			last_collected[found_item] = last_collected.get(found_item, 0) + added
-			loot_log.append_text("Bulunan: [color=yellow]%s (+%d)[/color]\n" % [name, added])
+			loot_log.append_text("Bulundu  [color=#b5d65a]%s (+%d)[/color]\n" % [item_name, added])
 		else:
-			loot_log.append_text("Bulunan: [color=gray]%s (çanta dolu)[/color]\n" % name)
+			loot_log.append_text("Bulundu  [color=#5c655f]%s (çanta dolu)[/color]\n" % item_name)
 
 func _update_ui():
-	lbl_time.text = "Kalan Süre: %d saat" % hours_left
-	lbl_stats.text = "HP: %d | Açlık: %d | Su: %d | Enerji: %d" % [
+	lbl_time.text = "Kalan süre: %d saat" % hours_left if hours_left > 0 else "Sığınağa dönüyorsun..."
+	progress.max_value = max(trip_hours, 1)
+	progress.value = trip_hours - hours_left
+	lbl_stats.text = "Can %d  ·  Açlık %d  ·  Su %d  ·  Enerji %d" % [
 		player.health,
 		player.hunger,
 		player.thirst,
 		player.energy
 	]
-	lbl_suit.text = "Suit Koruması: %% %d" % GameState.suit_durability
+	lbl_suit.text = "Giysi koruması: %d%%  ·  Tehlike: %d%%" % [GameState.suit_durability, risk]

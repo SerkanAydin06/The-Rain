@@ -1,165 +1,181 @@
-[gd_scene load_steps=5 format=3 uid="uid://btiiydog5u50k"]
+[gd_scene format=3 uid="uid://btiiydog5u50k"]
 
-[ext_resource type="Script" uid="uid://bac1fohs2oat6" path="res://Scripts/ExitPanel.gd" id="1_b4yl5"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vgjpe"]
-bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-shadow_size = 10
-shadow_offset = Vector2(0, 5)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_resp1"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
-bg_color = Color(0.7529412, 0.22352941, 0.16862746, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i14vt"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
-bg_color = Color(0.15294118, 0.68235296, 0.3764706, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[ext_resource type="Script" uid="uid://bac1fohs2oat6" path="res://Scripts/ExitPanel.gd" id="1"]
 
 [node name="ExitPanel" type="Control"]
-custom_minimum_size = Vector2(650, 450)
+z_index = 20
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_b4yl5")
+script = ExtResource("1")
 loading_box_path = NodePath("../LoadingBox")
 result_box_path = NodePath("../ResultBox")
 outside_panel_path = NodePath("../OutsidePanel")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Dim" type="ColorRect" parent="."]
+color = Color(0.01, 0.015, 0.02, 0.62)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_vgjpe")
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
 
-[node name="MainVBox" type="VBoxContainer" parent="MainMargin"]
+[node name="Card" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
-theme_override_constants/separation = 20
 
-[node name="TitleLabel" type="Label" parent="MainMargin/MainVBox"]
+[node name="VBox" type="VBoxContainer" parent="Center/Card"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
-theme_override_font_sizes/font_size = 36
-text = "DIŞARI ÇIKIŞ"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_constants/separation = 14
 
-[node name="TimeRow" type="HBoxContainer" parent="MainMargin/MainVBox"]
+[node name="Title" type="Label" parent="Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "DIŞARI ÇIK"
+
+[node name="Subtitle" type="Label" parent="Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"SubLabel"
+autowrap_mode = 3
+text = "Zehirli yağmura çıkıp malzeme ara. Süre uzadıkça tehlike ve bulunan eşya artar."
+
+[node name="Sep1" type="HSeparator" parent="Center/Card/VBox"]
+layout_mode = 2
+
+[node name="TimeRow" type="HBoxContainer" parent="Center/Card/VBox"]
 layout_mode = 2
 alignment = 1
+theme_override_constants/separation = 28
 
-[node name="BtnTimeMinus" type="Button" parent="MainMargin/MainVBox/TimeRow"]
-custom_minimum_size = Vector2(30, 0)
+[node name="BtnTimeMinus" type="Button" parent="Center/Card/VBox/TimeRow"]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-action_mode = 0
-text = "-"
+size_flags_vertical = 4
+theme_type_variation = &"IconButton"
+text = "−"
 
-[node name="TimeLabel" type="Label" parent="MainMargin/MainVBox/TimeRow"]
+[node name="TimeBox" type="VBoxContainer" parent="Center/Card/VBox/TimeRow"]
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7411765, 0.7647059, 0.78039217, 1)
-theme_override_font_sizes/font_size = 26
-text = "Süre: 3 Saat"
+theme_override_constants/separation = 0
 
-[node name="BtnTimePlus" type="Button" parent="MainMargin/MainVBox/TimeRow"]
-custom_minimum_size = Vector2(30, 0)
+[node name="TimeLabel" type="Label" parent="Center/Card/VBox/TimeRow/TimeBox"]
 layout_mode = 2
-action_mode = 0
+theme_type_variation = &"TitleLabel"
+text = "3 SAAT"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 52
+
+[node name="TimeHint" type="Label" parent="Center/Card/VBox/TimeRow/TimeBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "KEŞİF SÜRESİ"
+horizontal_alignment = 1
+
+[node name="BtnTimePlus" type="Button" parent="Center/Card/VBox/TimeRow"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"IconButton"
 text = "+"
 
-[node name="InfoVBox" type="VBoxContainer" parent="MainMargin/MainVBox"]
-custom_minimum_size = Vector2(0, 100)
+[node name="Info" type="PanelContainer" parent="Center/Card/VBox"]
 layout_mode = 2
-size_flags_vertical = 6
-alignment = 1
+theme_type_variation = &"CardPanel"
 
-[node name="RiskLabel" type="Label" parent="MainMargin/MainVBox/InfoVBox"]
+[node name="Grid" type="GridContainer" parent="Center/Card/VBox/Info"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7411765, 0.7647059, 0.78039217, 1)
-theme_override_font_sizes/font_size = 26
-text = "Tehlike: %50"
-horizontal_alignment = 1
-vertical_alignment = 1
+columns = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 12
 
-[node name="SuitLabel" type="Label" parent="MainMargin/MainVBox/InfoVBox"]
+[node name="RiskName" type="Label" parent="Center/Card/VBox/Info/Grid"]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7411765, 0.7647059, 0.78039217, 1)
-theme_override_font_sizes/font_size = 26
-text = "Koruyucu Giysi: % 80"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_type_variation = &"SmallLabel"
+text = "TEHLİKE"
 
-[node name="ButtonsRow" type="HBoxContainer" parent="MainMargin/MainVBox"]
-custom_minimum_size = Vector2(400, 0)
+[node name="RiskBar" type="ProgressBar" parent="Center/Card/VBox/Info/Grid"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 10
-alignment = 1
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"BarHealth"
+value = 50.0
+show_percentage = false
 
-[node name="BtnCancel" type="Button" parent="MainMargin/MainVBox/ButtonsRow"]
-custom_minimum_size = Vector2(180, 50)
+[node name="RiskLabel" type="Label" parent="Center/Card/VBox/Info/Grid"]
+custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_resp1")
-text = "İPTAL"
+theme_type_variation = &"ValueLabel"
+text = "50%"
+horizontal_alignment = 2
 
-[node name="BtnExit" type="Button" parent="MainMargin/MainVBox/ButtonsRow"]
-custom_minimum_size = Vector2(180, 50)
+[node name="SuitName" type="Label" parent="Center/Card/VBox/Info/Grid"]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_i14vt")
-text = "ÇIKIŞ YAP"
+theme_type_variation = &"SmallLabel"
+text = "GİYSİ"
+
+[node name="SuitBar" type="ProgressBar" parent="Center/Card/VBox/Info/Grid"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"BarSuit"
+value = 50.0
+show_percentage = false
+
+[node name="SuitLabel" type="Label" parent="Center/Card/VBox/Info/Grid"]
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+theme_type_variation = &"ValueLabel"
+text = "50%"
+horizontal_alignment = 2
+
+[node name="CostLabel" type="Label" parent="Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"SubLabel"
+autowrap_mode = 3
+text = "Tahmini tüketim: -15 Açlık · -18 Su · -24 Enerji"
+
+[node name="WarningLabel" type="Label" parent="Center/Card/VBox"]
+visible = false
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.878, 0.337, 0.302, 1)
+text = ""
+
+[node name="Sep2" type="HSeparator" parent="Center/Card/VBox"]
+layout_mode = 2
+
+[node name="ButtonsRow" type="HBoxContainer" parent="Center/Card/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BtnCancel" type="Button" parent="Center/Card/VBox/ButtonsRow"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+text = "VAZGEÇ"
+
+[node name="Spacer" type="Control" parent="Center/Card/VBox/ButtonsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnExit" type="Button" parent="Center/Card/VBox/ButtonsRow"]
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "DIŞARI ÇIK"

@@ -1,30 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://borq8sb6il2ep"]
+[gd_scene format=3 uid="uid://borq8sb6il2ep"]
 
-[ext_resource type="Script" uid="uid://bsxduy2qrl7bh" path="res://Scripts/DeathScreen.gd" id="1_4pnsc"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gb262"]
-bg_color = Color(0.2443868, 0.33725992, 0.43013304, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-shadow_size = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1d6nr"]
-bg_color = Color(0.26193383, 0.36273828, 0.46354267, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[ext_resource type="Script" uid="uid://bsxduy2qrl7bh" path="res://Scripts/DeathScreen.gd" id="1"]
 
 [node name="DeathScreen" type="CanvasLayer" groups=["death_screen"]]
 layer = 10
-script = ExtResource("1_4pnsc")
+script = ExtResource("1")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -35,13 +15,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Background" type="ColorRect" parent="Control"]
+color = Color(0.02, 0.02, 0.025, 0.88)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="Control"]
 layout_mode = 1
@@ -51,71 +31,50 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MainPanel" type="Panel" parent="Control/CenterContainer"]
-custom_minimum_size = Vector2(600, 500)
+[node name="MainPanel" type="PanelContainer" parent="Control/CenterContainer"]
+custom_minimum_size = Vector2(620, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gb262")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/CenterContainer/MainPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer/MainPanel/MarginContainer"]
+[node name="VBox" type="VBoxContainer" parent="Control/CenterContainer/MainPanel"]
 layout_mode = 2
-theme_override_constants/separation = 25
+theme_override_constants/separation = 14
 
-[node name="TitleLabel" type="Label" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Control/CenterContainer/MainPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 48
-text = "GAME OVER"
+theme_type_variation = &"TitleLabel"
+text = "ÖLDÜN"
 horizontal_alignment = 1
 
-[node name="ReasonLabel" type="RichTextLabel" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+[node name="ReasonLabel" type="RichTextLabel" parent="Control/CenterContainer/MainPanel/VBox"]
 layout_mode = 2
 bbcode_enabled = true
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
 
-[node name="StatsPanel" type="Panel" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 200)
+[node name="Sep" type="HSeparator" parent="Control/CenterContainer/MainPanel/VBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1d6nr")
 
-[node name="StatsVBox" type="VBoxContainer" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="ButtonsHBox" type="HBoxContainer" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+[node name="StatsPanel" type="PanelContainer" parent="Control/CenterContainer/MainPanel/VBox"]
 layout_mode = 2
-size_flags_vertical = 10
-theme_override_constants/separation = 20
-alignment = 1
+theme_type_variation = &"CardPanel"
 
-[node name="RestartBtn" type="Button" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox"]
+[node name="StatsVBox" type="VBoxContainer" parent="Control/CenterContainer/MainPanel/VBox/StatsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Control/CenterContainer/MainPanel/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="MenuBtn" type="Button" parent="Control/CenterContainer/MainPanel/VBox/ButtonsHBox"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.18039216, 0.8, 0.44313726, 1)
-theme_override_font_sizes/font_size = 18
-text = "YENİDEN BAŞLAT"
-
-[node name="MenuBtn" type="Button" parent="Control/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox"]
-custom_minimum_size = Vector2(200, 50)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.58431375, 0.64705884, 0.6509804, 1)
-theme_override_font_sizes/font_size = 18
 text = "ANA MENÜ"
+
+[node name="RestartBtn" type="Button" parent="Control/CenterContainer/MainPanel/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "YENİDEN BAŞLA"

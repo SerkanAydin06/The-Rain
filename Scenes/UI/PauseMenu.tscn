@@ -1,0 +1,336 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/PauseMenu.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/SettingsPanel.tscn" id="2"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 8
+script = ExtResource("1")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+color = Color(0.01, 0.015, 0.02, 0.72)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 150.0
+offset_top = -220.0
+offset_right = 600.0
+offset_bottom = 220.0
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Root/Menu"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "DURAKLATILDI"
+
+[node name="Info" type="Label" parent="Root/Menu"]
+layout_mode = 2
+theme_type_variation = &"SubLabel"
+text = "Gün 1 · 00:00"
+
+[node name="Spacer" type="Control" parent="Root/Menu"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+
+[node name="ResumeBtn" type="Button" parent="Root/Menu"]
+layout_mode = 2
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(380, 0)
+theme_type_variation = &"MainMenuButton"
+text = "DEVAM ET"
+alignment = 0
+
+[node name="SaveBtn" type="Button" parent="Root/Menu"]
+layout_mode = 2
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(380, 0)
+theme_type_variation = &"MainMenuButton"
+text = "KAYDET"
+alignment = 0
+
+[node name="SettingsBtn" type="Button" parent="Root/Menu"]
+layout_mode = 2
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(380, 0)
+theme_type_variation = &"MainMenuButton"
+text = "AYARLAR"
+alignment = 0
+
+[node name="MenuBtn" type="Button" parent="Root/Menu"]
+layout_mode = 2
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(380, 0)
+theme_type_variation = &"MainMenuButton"
+text = "ANA MENÜ"
+alignment = 0
+
+[node name="QuitBtn" type="Button" parent="Root/Menu"]
+layout_mode = 2
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(380, 0)
+theme_type_variation = &"MainMenuButton"
+text = "OYUNDAN ÇIK"
+alignment = 0
+
+[node name="Toast" type="Label" parent="Root/Menu"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+vertical_alignment = 2
+
+[node name="Controls" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -560.0
+offset_top = -190.0
+offset_right = -150.0
+offset_bottom = 190.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"CardPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Root/Controls"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "KONTROLLER"
+
+[node name="Row0" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row0"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "A / D"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row0"]
+layout_mode = 2
+text = "Yürü"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row1" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row1"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "E"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row1"]
+layout_mode = 2
+text = "Etkileşim"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row2" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row2"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "TAB"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row2"]
+layout_mode = 2
+text = "Envanter"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row3" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row3"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "1"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row3"]
+layout_mode = 2
+text = "Ye"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row4" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row4"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "2"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row4"]
+layout_mode = 2
+text = "İç"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row5" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row5"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "3"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row5"]
+layout_mode = 2
+text = "Medkit"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row6" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row6"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "4"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row6"]
+layout_mode = 2
+text = "Enerji içeceği"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row7" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row7"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "ESC"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row7"]
+layout_mode = 2
+text = "Duraklat"
+theme_override_font_sizes/font_size = 18
+
+[node name="Row8" type="HBoxContainer" parent="Root/Controls/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Key" type="Label" parent="Root/Controls/VBox/Row8"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "F11"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Controls/VBox/Row8"]
+layout_mode = 2
+text = "Tam ekran"
+theme_override_font_sizes/font_size = 18
+
+[node name="SettingsPanel" parent="Root" instance=ExtResource("2")]
+layout_mode = 1
+
+[node name="Confirm" type="Control" parent="Root"]
+visible = false
+z_index = 40
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root/Confirm"]
+color = Color(0, 0, 0, 0.5)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center" type="CenterContainer" parent="Root/Confirm"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" type="PanelContainer" parent="Root/Confirm/Center"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Root/Confirm/Center/Card"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Root/Confirm/Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "EMİN MİSİN?"
+
+[node name="Text" type="Label" parent="Root/Confirm/Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"SubLabel"
+autowrap_mode = 3
+text = "Son kayıttan sonraki ilerlemen kaybolabilir."
+
+[node name="Footer" type="HBoxContainer" parent="Root/Confirm/Center/Card/VBox"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 12
+
+[node name="NoBtn" type="Button" parent="Root/Confirm/Center/Card/VBox/Footer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "VAZGEÇ"
+
+[node name="SaveYesBtn" type="Button" parent="Root/Confirm/Center/Card/VBox/Footer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "KAYDET VE ÇIK"
+
+[node name="YesBtn" type="Button" parent="Root/Confirm/Center/Card/VBox/Footer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_type_variation = &"DangerButton"
+text = "KAYDETMEDEN ÇIK"

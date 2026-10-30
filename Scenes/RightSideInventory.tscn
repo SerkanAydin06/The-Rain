@@ -1,27 +1,58 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqi5s20uuvg5y"]
+[gd_scene format=3 uid="uid://cqi5s20uuvg5y"]
 
-[ext_resource type="Script" uid="uid://cr7pxoreb8hj5" path="res://Scripts/RightSideInventory.gd" id="1_3y3l1"]
+[ext_resource type="Script" uid="uid://cr7pxoreb8hj5" path="res://Scripts/RightSideInventory.gd" id="1"]
 
 [node name="RightSideInventory" type="CanvasLayer"]
-script = ExtResource("1_3y3l1")
+layer = 2
+script = ExtResource("1")
 
-[node name="Control" type="Control" parent="."]
-z_index = 5
-layout_mode = 3
+[node name="Control" type="PanelContainer" parent="."]
+layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -444.0
+offset_top = 140.0
+offset_right = -24.0
+offset_bottom = -150.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/ScrollContainer"]
+[node name="VBox" type="VBoxContainer" parent="Control"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Control/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Control/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderLabel"
+text = "ENVANTER"
+
+[node name="Key" type="Label" parent="Control/VBox/Header"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"KeyCap"
+text = "TAB"
+
+[node name="Sep" type="HSeparator" parent="Control/VBox"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/VBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Footer" type="Label" parent="Control/VBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "Eşyaların üzerine gel: ayrıntı"
+horizontal_alignment = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dgnxu77krwlnp"]
+[gd_scene format=3 uid="uid://dgnxu77krwlnp"]
 
 [ext_resource type="Script" uid="uid://8k2hef2uono5" path="res://Scripts/Main.gd" id="1_c5snn"]
 [ext_resource type="Script" uid="uid://brecppnxwhegt" path="res://Scripts/TimeManager.gd" id="1_ma7h6"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://bq86ewdbv75rd" path="res://Scenes/HUD.tscn" id="7_sxkr1"]
 [ext_resource type="PackedScene" uid="uid://cqi5s20uuvg5y" path="res://Scenes/RightSideInventory.tscn" id="8_fq0cl"]
 [ext_resource type="PackedScene" uid="uid://borq8sb6il2ep" path="res://Scenes/DeathScreen.tscn" id="9_hwpts"]
-[ext_resource type="PackedScene" uid="uid://d4gx2peg0yry7" path="res://Scenes/ConsumablesHUD.tscn" id="10_jyqft"]
 [ext_resource type="PackedScene" uid="uid://b13aiviwm4s7n" path="res://Scenes/CraftingPanel.tscn" id="11_3tgeq"]
 [ext_resource type="PackedScene" uid="uid://b8vo50y0rfjwb" path="res://Scenes/LoadingBox.tscn" id="12_c4ay3"]
 [ext_resource type="PackedScene" uid="uid://iaroj81rmnt4" path="res://Scenes/ResultBox.tscn" id="13_aht7i"]
@@ -15,8 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://c4i311e2ynwgq" path="res://Scenes/OutsidePanel.tscn" id="15_kpo4j"]
 [ext_resource type="PackedScene" uid="uid://btiiydog5u50k" path="res://Scenes/ExitPanel.tscn" id="16_4n42c"]
 [ext_resource type="PackedScene" uid="uid://cl51iqdppqegt" path="res://Scenes/DialogueUI.tscn" id="17_c5snn"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/PauseMenu.tscn" id="30_pause"]
 [ext_resource type="PackedScene" uid="uid://c1qec0o5b6us5" path="res://Scenes/UI.tscn" id="22_oa6sj"]
-[ext_resource type="Script" uid="uid://c1rtb1mibqjmu" path="res://Scripts/TimeLabel.gd" id="23_0f1tp"]
 [ext_resource type="Texture2D" uid="uid://cjpjln2b3eny7" path="res://kaplama/zemin1.png" id="39_6ehlx"]
 [ext_resource type="Texture2D" uid="uid://oc33j5vswgf3" path="res://kaplama/Background.png" id="39_vs04g"]
 
@@ -35,24 +34,12 @@ script = ExtResource("1_ma7h6")
 color = Color(0.17641911, 0.17641908, 0.17641908, 1)
 
 [node name="UI" parent="." instance=ExtResource("22_oa6sj")]
-layer = 0
-
-[node name="TimeLabel" type="Label" parent="UI" groups=["UI"]]
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 23.0
-grow_horizontal = 2
-horizontal_alignment = 1
-script = ExtResource("23_0f1tp")
-time_manager_path = NodePath("../../World/TimeManager")
 
 [node name="HUD" parent="UI" instance=ExtResource("7_sxkr1")]
 
 [node name="RightSideInventory" parent="UI" instance=ExtResource("8_fq0cl")]
 
 [node name="DeathScreen" parent="UI" instance=ExtResource("9_hwpts")]
-
-[node name="ConsumablesHUD" parent="UI" instance=ExtResource("10_jyqft")]
 
 [node name="CraftingPanel" parent="UI" instance=ExtResource("11_3tgeq")]
 
@@ -67,6 +54,8 @@ time_manager_path = NodePath("../../World/TimeManager")
 [node name="ExitPanel" parent="UI" instance=ExtResource("16_4n42c")]
 
 [node name="DialogueUI" parent="UI" instance=ExtResource("17_c5snn")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("30_pause")]
 
 [node name="ArkaPlanlar" type="Node2D" parent="."]
 

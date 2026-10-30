@@ -20,7 +20,8 @@ func _ready():
 	# 4. Yeni oyunda hedef ve kontroller
 	if GameState.current_day == 1 and GameState.current_hour == 0:
 		SurvivalManager.notify("Zehirli yağmur dinmiyor. Hayatta kal ve telsizi onar.\n3 radyo parçası + 1 pil ile yardım çağır.")
-		SurvivalManager.notify("E: Etkileşim  |  1: Ye  2: İç  3: Medkit  4: Enerji İçeceği")
+		if GameSettings.show_hints:
+			SurvivalManager.notify("A/D yürü  ·  E etkileşim  ·  TAB envanter  ·  1-4 hızlı kullanım  ·  ESC menü")
 	
 	print("✅ World hazır!")
 
