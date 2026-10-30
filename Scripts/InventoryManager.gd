@@ -48,28 +48,42 @@ func use_item(item_id: String) -> bool:
 		return true
 	return false
 
+# Eşya bilgileri: id -> [isim, emoji, ikon yolu]
+const ITEMS := {
+	"food": ["Konserve", "🥫", "res://Assets/Icons/foodicon.png"],
+	"water": ["Temiz Su", "💧", ""],
+	"dirty_water": ["Kirli Su", "🟤", ""],
+	"medkit": ["Medkit", "🩹", "res://Assets/Icons/medkiticon.png"],
+	"battery": ["Pil", "🔋", "res://Assets/Icons/batteryicon.png"],
+	"energy_drink": ["Enerji İçeceği", "🥤", ""],
+	"wood": ["Tahta", "🪵", "res://Assets/Icons/woodicon.png"],
+	"stone": ["Taş", "🪨", ""],
+	"scrap": ["Hurda", "🔩", "res://Assets/Icons/scrapicon.png"],
+	"cloth": ["Kumaş", "🧵", "res://Assets/Icons/clothicon.png"],
+	"wire": ["Tel", "🔌", ""],
+	"plastic": ["Plastik", "♻️", ""],
+	"metal": ["Metal", "⚙️", ""],
+	"chemical": ["Kimyasal", "🧪", ""],
+	"electronic": ["Elektronik", "💻", ""],
+	"fuel": ["Yakıt", "⛽", ""],
+	"medicine": ["İlaç", "💊", ""],
+	"component": ["Bileşen", "⚡", ""],
+	"medkit_crafted": ["Yapay Medkit", "🩹", ""],
+	"battery_crafted": ["Şarjlı Pil", "🔋", ""],
+	"toolkit": ["Alet Çantası", "🧰", ""],
+	"radio_part": ["Radyo Parçası", "📡", ""],
+}
+
+func get_item_name(item_id: String) -> String:
+	return ITEMS[item_id][0] if ITEMS.has(item_id) else item_id.capitalize()
+
+func get_item_emoji(item_id: String) -> String:
+	return ITEMS[item_id][1] if ITEMS.has(item_id) else "📦"
+
+func get_item_icon(item_id: String) -> Texture2D:
+	if ITEMS.has(item_id) and not ITEMS[item_id][2].is_empty():
+		return load(ITEMS[item_id][2])
+	return null
+
 func get_item_display_name(item_id: String) -> String:
-	match item_id:
-		"food": return "🍖 Yiyecek"
-		"battery": return "🔋 Pil"
-		"medkit": return "🩹 Medkit"
-		"scrap": return "🔩 Parça"
-		"wood": return "🪵 Tahta"
-		"cloth": return "🧵 Kumaş"
-		"water": return "💧 Temiz Su"
-		"dirty_water": return "🟤 Kirli Su"
-		"stone": return "🪨 Taş"
-		"plastic": return "🥤 Plastik"
-		"metal": return "⚙️ Metal"
-		"chemical": return "🧪 Kimyasal"
-		"circuit": return "💻 Devre"
-		"energy_drink": return "🥤 Enerji İçeceği"
-		"stone": return "🪨 Taş"
-		"wire": return "🔌 Tel"
-		"electronic": return "💻 Elektronik"
-		"fuel": return "⛽ Yakıt"
-		"medicine": return "💊 İlaç"
-		"component": return "⚡ Bileşen"
-		"toolkit": return "🧰 Alet Çantası"
-		"radio_part": return "📡 Radyo Parçası"
-		_: return "📦 " + item_id.capitalize()
+	return get_item_emoji(item_id) + " " + get_item_name(item_id)

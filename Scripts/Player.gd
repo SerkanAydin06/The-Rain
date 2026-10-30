@@ -69,7 +69,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = 0
 
-	var dir := Input.get_axis("ui_left", "ui_right")
+	var dir := Input.get_axis("move_left", "move_right")
 	velocity.x = dir * speed
 	
 	_handle_animations(dir)

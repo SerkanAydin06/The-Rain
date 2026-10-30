@@ -184,7 +184,7 @@ func _on_area_2d_body_entered(body: Node) -> void:
 	# InteractionHUD'da göster
 	var hud = get_node_or_null("/root/InteractionHUD")
 	if hud:
-		hud.show_hint("[E] Craft (" + workbench_name + ")")
+		hud.show_hint("[E] Üretim tezgahı")
 	else:
 		print("⚠️ Workbench: InteractionHUD bulunamadı!")
 	

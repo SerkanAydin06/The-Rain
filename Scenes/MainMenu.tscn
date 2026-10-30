@@ -1,10 +1,35 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkxnb8fc6tn0u"]
+[gd_scene format=3 uid="uid://dkxnb8fc6tn0u"]
 
-[ext_resource type="Script" uid="uid://bu3ueiq3sqpar" path="res://Scripts/MainMenu.gd" id="1_tt5f1"]
+[ext_resource type="Script" path="res://Scripts/MainMenu.gd" id="1"]
+[ext_resource type="Texture2D" path="res://kaplama/Background.png" id="2"]
+[ext_resource type="Shader" path="res://Assets/UI/menu_background.gdshader" id="3"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/SettingsPanel.tscn" id="4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
+shader = ExtResource("3")
+shader_parameter/darkness = 0.72
+shader_parameter/tint = Color(0.55, 0.68, 0.45, 1)
+shader_parameter/vignette = 1.15
+shader_parameter/flash = 0.0
+
+[sub_resource type="Gradient" id="Gradient_drop"]
+colors = PackedColorArray(0.75, 0.85, 0.7, 0, 0.8, 0.9, 0.75, 0.55)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_drop"]
+gradient = SubResource("Gradient_drop")
+width = 2
+height = 28
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_shade"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.02, 0.03, 0.03, 0.9, 0.02, 0.03, 0.03, 0.35, 0.02, 0.03, 0.03, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_shade"]
+gradient = SubResource("Gradient_shade")
 
 [node name="MainMenu" type="CanvasLayer"]
-layer = 20
-script = ExtResource("1_tt5f1")
+script = ExtResource("1")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -14,66 +39,225 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="ColorRect" parent="Control"]
+[node name="Base" type="ColorRect" parent="Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.101960786, 0.14509805, 0.1882353, 1)
+color = Color(0.03, 0.04, 0.045, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="Control"]
+[node name="Background" type="TextureRect" parent="Control"]
+material = SubResource("ShaderMaterial_bg")
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer"]
-layout_mode = 2
-theme_override_constants/separation = 40
+[node name="Rain" type="CPUParticles2D" parent="Control"]
+position = Vector2(1060, -60)
+amount = 420
+lifetime = 1.1
+preprocess = 2.0
+texture = SubResource("GradientTexture2D_drop")
+emission_shape = 3
+emission_rect_extents = Vector2(1200, 10)
+direction = Vector2(-0.18, 1)
+spread = 2.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1100.0
+initial_velocity_max = 1400.0
+particle_flag_align_y = true
+scale_amount_min = 0.6
+scale_amount_max = 1.3
 
-[node name="TitleLabel" type="Label" parent="Control/CenterContainer/VBoxContainer"]
+[node name="LeftShade" type="TextureRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 1100.0
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_shade")
+expand_mode = 1
+
+[node name="Content" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 150.0
+offset_top = -300.0
+offset_right = 750.0
+offset_bottom = 300.0
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Control/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.20392157, 0.59607846, 0.85882354, 1)
-theme_override_font_sizes/font_size = 64
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 132
 text = "THE RAIN"
-horizontal_alignment = 1
 
-[node name="ButtonsVBox" type="VBoxContainer" parent="Control/CenterContainer/VBoxContainer"]
+[node name="Tagline" type="Label" parent="Control/Content"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_type_variation = &"SubLabel"
+theme_override_font_sizes/font_size = 22
+text = "Zehirli yağmur dinmiyor. Sığınağında hayatta kal."
 
-[node name="NewGameBtn" type="Button" parent="Control/CenterContainer/VBoxContainer/ButtonsVBox"]
+[node name="Accent" type="ColorRect" parent="Control/Content"]
+custom_minimum_size = Vector2(64, 3)
 layout_mode = 2
+size_flags_horizontal = 0
+color = Color(0.709804, 0.839216, 0.352941, 1)
+
+[node name="Spacer" type="Control" parent="Control/Content"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="Control/Content"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 6
+
+[node name="ContinueBtn" type="Button" parent="Control/Content/ButtonsVBox"]
+layout_mode = 2
+theme_type_variation = &"MainMenuButton"
+text = "DEVAM ET"
+alignment = 0
+
+[node name="NewGameBtn" type="Button" parent="Control/Content/ButtonsVBox"]
+layout_mode = 2
+theme_type_variation = &"MainMenuButton"
 text = "YENİ OYUN"
+alignment = 0
 
-[node name="LoadGameBtn" type="Button" parent="Control/CenterContainer/VBoxContainer/ButtonsVBox"]
+[node name="SettingsBtn" type="Button" parent="Control/Content/ButtonsVBox"]
 layout_mode = 2
-text = "OYUNU YÜKLE"
-
-[node name="SettingsBtn" type="Button" parent="Control/CenterContainer/VBoxContainer/ButtonsVBox"]
-layout_mode = 2
+theme_type_variation = &"MainMenuButton"
 text = "AYARLAR"
+alignment = 0
 
-[node name="QuitBtn" type="Button" parent="Control/CenterContainer/VBoxContainer/ButtonsVBox"]
+[node name="QuitBtn" type="Button" parent="Control/Content/ButtonsVBox"]
 layout_mode = 2
+theme_type_variation = &"MainMenuButton"
 text = "ÇIKIŞ"
+alignment = 0
+
+[node name="SaveInfo" type="Label" parent="Control/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+vertical_alignment = 2
 
 [node name="VersionLabel" type="Label" parent="Control"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -23.0
-offset_right = 40.0
+offset_left = 150.0
+offset_top = -64.0
+offset_right = 600.0
+offset_bottom = -36.0
 grow_vertical = 0
-text = "v1.0"
+theme_type_variation = &"SmallLabel"
+text = "v1.1"
+
+[node name="HintLabel" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -700.0
+offset_top = -64.0
+offset_right = -60.0
+offset_bottom = -36.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_type_variation = &"SmallLabel"
+text = "F11  Tam ekran     ·     ESC  Geri"
+horizontal_alignment = 2
+
+[node name="Confirm" type="Control" parent="Control"]
+visible = false
+z_index = 40
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Control/Confirm"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Center" type="CenterContainer" parent="Control/Confirm"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" type="PanelContainer" parent="Control/Confirm/Center"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Control/Confirm/Center/Card"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Control/Confirm/Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "YENİ OYUN"
+
+[node name="Text" type="Label" parent="Control/Confirm/Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"SubLabel"
+text = "Mevcut kaydın silinecek. Devam etmek istiyor musun?"
+autowrap_mode = 3
+
+[node name="Footer" type="HBoxContainer" parent="Control/Confirm/Center/Card/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 2
+
+[node name="NoBtn" type="Button" parent="Control/Confirm/Center/Card/VBox/Footer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "VAZGEÇ"
+
+[node name="YesBtn" type="Button" parent="Control/Confirm/Center/Card/VBox/Footer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_type_variation = &"DangerButton"
+text = "SİL VE BAŞLA"
+
+[node name="SettingsPanel" parent="Control" instance=ExtResource("4")]
+layout_mode = 1
+
+[node name="Fade" type="ColorRect" parent="Control"]
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

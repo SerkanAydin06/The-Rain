@@ -1,236 +1,501 @@
-[gd_scene load_steps=14 format=3 uid="uid://bq86ewdbv75rd"]
+[gd_scene format=3 uid="uid://bq86ewdbv75rd"]
 
-[ext_resource type="Script" uid="uid://6iyll6ax6y74" path="res://Scripts/HUD.gd" id="1_c3eba"]
-[ext_resource type="Texture2D" uid="uid://i7nd0ykvi1vr" path="res://icons/healthicon.png" id="2_g8s2e"]
-[ext_resource type="Texture2D" uid="uid://bn1605n2hoanj" path="res://icons/hungericon.png" id="3_t385i"]
-[ext_resource type="Texture2D" uid="uid://lphbgk2x8ub0" path="res://icons/energyicon.png" id="4_nfm57"]
-[ext_resource type="Texture2D" uid="uid://clqhw8bkrhpuo" path="res://icons/suiticon.png" id="5_b5b84"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbb48"]
-bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.49803922, 0.54901963, 0.5529412, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o2vyp"]
-bg_color = Color(0.39607844, 0, 0, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hhtw7"]
-bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.49803922, 0.54901963, 0.5529412, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w5mne"]
-bg_color = Color(0, 0.36057857, 0.14491868, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xuldq"]
-bg_color = Color(0.17254902, 0.24313726, 0.3137255, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.49803922, 0.54901963, 0.5529412, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6jqq"]
-bg_color = Color(0.042218767, 0.26037687, 0.39750758, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_thirst"]
-bg_color = Color(0.1, 0.45, 0.75, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ouvn"]
-bg_color = Color(0.4679007, 0.000159024, 0.46990812, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[ext_resource type="Script" uid="uid://6iyll6ax6y74" path="res://Scripts/HUD.gd" id="1"]
+[ext_resource type="Texture2D" path="res://Assets/Icons/foodicon.png" id="2"]
+[ext_resource type="Texture2D" path="res://Assets/Icons/medkiticon.png" id="3"]
+[ext_resource type="Texture2D" path="res://Assets/Icons/batteryicon.png" id="4"]
+[ext_resource type="Texture2D" path="res://icons/energyicon.png" id="5"]
 
 [node name="HUD" type="Control" groups=["hud"]]
-custom_minimum_size = Vector2(400, 0)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_c3eba")
-metadata/_edit_use_anchors_ = true
+mouse_filter = 2
+script = ExtResource("1")
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="Stats" type="PanelContainer" parent="."]
 layout_mode = 0
-offset_right = 420.0
-offset_bottom = 250.0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 344.0
+offset_bottom = 196.0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
 
-[node name="BarsVBox" type="VBoxContainer" parent="MainMargin"]
+[node name="Rows" type="VBoxContainer" parent="Stats"]
 layout_mode = 2
-theme_override_constants/separation = 10
+mouse_filter = 2
+theme_override_constants/separation = 9
 
-[node name="HealthRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
-custom_minimum_size = Vector2(400, 0)
+[node name="HealthRow" type="HBoxContainer" parent="Stats/Rows"]
 layout_mode = 2
-theme_override_constants/separation = 10
+mouse_filter = 2
+theme_override_constants/separation = 12
 
-[node name="HealthIcon" type="TextureRect" parent="MainMargin/BarsVBox/HealthRow"]
-custom_minimum_size = Vector2(70, 35)
+[node name="HealthLabel" type="Label" parent="Stats/Rows/HealthRow"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-texture = ExtResource("2_g8s2e")
-expand_mode = 1
-
-[node name="HealthLabel" type="Label" parent="MainMargin/BarsVBox/HealthRow"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "HEALTH"
+theme_type_variation = &"SmallLabel"
+text = "CAN"
 vertical_alignment = 1
 
-[node name="HealthBar" type="ProgressBar" parent="MainMargin/BarsVBox/HealthRow"]
-custom_minimum_size = Vector2(200, 20)
+[node name="HealthBar" type="ProgressBar" parent="Stats/Rows/HealthRow"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_fbb48")
-theme_override_styles/fill = SubResource("StyleBoxFlat_o2vyp")
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"BarHealth"
 value = 100.0
+show_percentage = false
 
-[node name="HungerRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
-custom_minimum_size = Vector2(400, 0)
+[node name="HealthValue" type="Label" parent="Stats/Rows/HealthRow"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_type_variation = &"ValueLabel"
+text = "100"
+horizontal_alignment = 2
 
-[node name="HungerIcon" type="TextureRect" parent="MainMargin/BarsVBox/HungerRow"]
-custom_minimum_size = Vector2(70, 35)
+[node name="HungerRow" type="HBoxContainer" parent="Stats/Rows"]
 layout_mode = 2
-texture = ExtResource("3_t385i")
-expand_mode = 1
+mouse_filter = 2
+theme_override_constants/separation = 12
 
-[node name="HungerLabel" type="Label" parent="MainMargin/BarsVBox/HungerRow"]
-custom_minimum_size = Vector2(80, 0)
+[node name="HungerLabel" type="Label" parent="Stats/Rows/HungerRow"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "HUNGER"
+theme_type_variation = &"SmallLabel"
+text = "AÇLIK"
 vertical_alignment = 1
 
-[node name="HungerBar" type="ProgressBar" parent="MainMargin/BarsVBox/HungerRow"]
-custom_minimum_size = Vector2(200, 20)
+[node name="HungerBar" type="ProgressBar" parent="Stats/Rows/HungerRow"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_hhtw7")
-theme_override_styles/fill = SubResource("StyleBoxFlat_w5mne")
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"BarHunger"
 value = 100.0
+show_percentage = false
 
-[node name="ThirstRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
-custom_minimum_size = Vector2(400, 0)
+[node name="HungerValue" type="Label" parent="Stats/Rows/HungerRow"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_type_variation = &"ValueLabel"
+text = "100"
+horizontal_alignment = 2
 
-[node name="ThirstIcon" type="TextureRect" parent="MainMargin/BarsVBox/ThirstRow"]
-custom_minimum_size = Vector2(70, 35)
+[node name="ThirstRow" type="HBoxContainer" parent="Stats/Rows"]
 layout_mode = 2
-expand_mode = 1
+mouse_filter = 2
+theme_override_constants/separation = 12
 
-[node name="ThirstLabel" type="Label" parent="MainMargin/BarsVBox/ThirstRow"]
-custom_minimum_size = Vector2(80, 0)
+[node name="ThirstLabel" type="Label" parent="Stats/Rows/ThirstRow"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "THIRST"
+theme_type_variation = &"SmallLabel"
+text = "SU"
 vertical_alignment = 1
 
-[node name="ThirstBar" type="ProgressBar" parent="MainMargin/BarsVBox/ThirstRow"]
-custom_minimum_size = Vector2(200, 20)
+[node name="ThirstBar" type="ProgressBar" parent="Stats/Rows/ThirstRow"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_hhtw7")
-theme_override_styles/fill = SubResource("StyleBoxFlat_thirst")
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"BarThirst"
 value = 100.0
+show_percentage = false
 
-[node name="EnergyRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
-custom_minimum_size = Vector2(400, 0)
+[node name="ThirstValue" type="Label" parent="Stats/Rows/ThirstRow"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_type_variation = &"ValueLabel"
+text = "100"
+horizontal_alignment = 2
 
-[node name="EnergyIcon" type="TextureRect" parent="MainMargin/BarsVBox/EnergyRow"]
-custom_minimum_size = Vector2(70, 35)
+[node name="EnergyRow" type="HBoxContainer" parent="Stats/Rows"]
 layout_mode = 2
-texture = ExtResource("4_nfm57")
-expand_mode = 1
+mouse_filter = 2
+theme_override_constants/separation = 12
 
-[node name="EnergyLabel" type="Label" parent="MainMargin/BarsVBox/EnergyRow"]
-custom_minimum_size = Vector2(80, 0)
+[node name="EnergyLabel" type="Label" parent="Stats/Rows/EnergyRow"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "ENERGY"
+theme_type_variation = &"SmallLabel"
+text = "ENERJİ"
 vertical_alignment = 1
 
-[node name="EnergyBar" type="ProgressBar" parent="MainMargin/BarsVBox/EnergyRow"]
-custom_minimum_size = Vector2(200, 20)
+[node name="EnergyBar" type="ProgressBar" parent="Stats/Rows/EnergyRow"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_xuldq")
-theme_override_styles/fill = SubResource("StyleBoxFlat_g6jqq")
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"BarEnergy"
 value = 100.0
+show_percentage = false
 
-[node name="SuitRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
-custom_minimum_size = Vector2(400, 0)
+[node name="EnergyValue" type="Label" parent="Stats/Rows/EnergyRow"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_type_variation = &"ValueLabel"
+text = "100"
+horizontal_alignment = 2
 
-[node name="SuitIcon" type="TextureRect" parent="MainMargin/BarsVBox/SuitRow"]
-custom_minimum_size = Vector2(70, 35)
+[node name="SuitRow" type="HBoxContainer" parent="Stats/Rows"]
 layout_mode = 2
-texture = ExtResource("5_b5b84")
-expand_mode = 1
+mouse_filter = 2
+theme_override_constants/separation = 12
 
-[node name="SuitLabel" type="Label" parent="MainMargin/BarsVBox/SuitRow"]
-custom_minimum_size = Vector2(80, 0)
+[node name="SuitLabel" type="Label" parent="Stats/Rows/SuitRow"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "SUIT"
+theme_type_variation = &"SmallLabel"
+text = "GİYSİ"
 vertical_alignment = 1
 
-[node name="SuitBar" type="ProgressBar" parent="MainMargin/BarsVBox/SuitRow"]
-custom_minimum_size = Vector2(200, 20)
+[node name="SuitBar" type="ProgressBar" parent="Stats/Rows/SuitRow"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_xuldq")
-theme_override_styles/fill = SubResource("StyleBoxFlat_5ouvn")
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"BarSuit"
 value = 100.0
+show_percentage = false
+
+[node name="SuitValue" type="Label" parent="Stats/Rows/SuitRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_type_variation = &"ValueLabel"
+text = "100"
+horizontal_alignment = 2
+
+[node name="Clock" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 20.0
+offset_right = 170.0
+offset_bottom = 64.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"PillPanel"
+
+[node name="HBox" type="HBoxContainer" parent="Clock"]
+layout_mode = 2
+alignment = 1
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="DayLabel" type="Label" parent="Clock/HBox"]
+layout_mode = 2
+theme_type_variation = &"ValueLabel"
+text = "GÜN 1"
+
+[node name="Dot" type="Label" parent="Clock/HBox"]
+layout_mode = 2
+theme_type_variation = &"SubLabel"
+text = "·"
+
+[node name="TimeLabel" type="Label" parent="Clock/HBox"]
+layout_mode = 2
+theme_type_variation = &"ValueLabel"
+text = "00:00"
+
+[node name="PhaseLabel" type="Label" parent="Clock/HBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "GECE"
+
+[node name="Chips" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 72.0
+offset_right = 300.0
+offset_bottom = 104.0
+grow_horizontal = 2
+alignment = 1
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="StormChip" type="Label" parent="Chips"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "FIRTINA"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="DarkChip" type="Label" parent="Chips"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "KARANLIK"
+
+[node name="RescueChip" type="Label" parent="Chips"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"KeyCap"
+text = "KURTARMA"
+
+[node name="Objective" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -404.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 110.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Objective"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="Objective/VBox"]
+layout_mode = 2
+theme_type_variation = &"SectionLabel"
+text = "HEDEF"
+
+[node name="Text" type="Label" parent="Objective/VBox"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+text = "Telsizi onar"
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 18
+
+[node name="Progress" type="ProgressBar" parent="Objective/VBox"]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BarAccent"
+max_value = 3.0
+show_percentage = false
+
+[node name="Hotbar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -280.0
+offset_top = -122.0
+offset_right = 280.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="Slot_food" type="PanelContainer" parent="Hotbar"]
+custom_minimum_size = Vector2(100, 92)
+layout_mode = 2
+tooltip_text = "Konserve yemek: +35 Açlık"
+theme_type_variation = &"CardPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Hotbar/Slot_food"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureRect" parent="Hotbar/Slot_food/VBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Hotbar/Slot_food/VBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "YEMEK"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Key" type="Label" parent="Hotbar/Slot_food"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_type_variation = &"KeyCap"
+text = "1"
+
+[node name="Count" type="Label" parent="Hotbar/Slot_food"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_type_variation = &"ValueLabel"
+text = "0"
+
+[node name="Slot_water" type="PanelContainer" parent="Hotbar"]
+custom_minimum_size = Vector2(100, 92)
+layout_mode = 2
+tooltip_text = "Su: +40 Susuzluk (yoksa kirli su içilir)"
+theme_type_variation = &"CardPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Hotbar/Slot_water"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 2
+
+[node name="Icon" type="Label" parent="Hotbar/Slot_water/VBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+text = "💧"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 26
+
+[node name="Name" type="Label" parent="Hotbar/Slot_water/VBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "SU"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Key" type="Label" parent="Hotbar/Slot_water"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_type_variation = &"KeyCap"
+text = "2"
+
+[node name="Count" type="Label" parent="Hotbar/Slot_water"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_type_variation = &"ValueLabel"
+text = "0"
+
+[node name="Slot_medkit" type="PanelContainer" parent="Hotbar"]
+custom_minimum_size = Vector2(100, 92)
+layout_mode = 2
+tooltip_text = "Medkit: +40 Can"
+theme_type_variation = &"CardPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Hotbar/Slot_medkit"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureRect" parent="Hotbar/Slot_medkit/VBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Hotbar/Slot_medkit/VBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "MEDKİT"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Key" type="Label" parent="Hotbar/Slot_medkit"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_type_variation = &"KeyCap"
+text = "3"
+
+[node name="Count" type="Label" parent="Hotbar/Slot_medkit"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_type_variation = &"ValueLabel"
+text = "0"
+
+[node name="Slot_energy_drink" type="PanelContainer" parent="Hotbar"]
+custom_minimum_size = Vector2(100, 92)
+layout_mode = 2
+tooltip_text = "Enerji içeceği: +25 Enerji, +10 Su"
+theme_type_variation = &"CardPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Hotbar/Slot_energy_drink"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureRect" parent="Hotbar/Slot_energy_drink/VBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Hotbar/Slot_energy_drink/VBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "ENERJİ"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Key" type="Label" parent="Hotbar/Slot_energy_drink"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_type_variation = &"KeyCap"
+text = "4"
+
+[node name="Count" type="Label" parent="Hotbar/Slot_energy_drink"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_type_variation = &"ValueLabel"
+text = "0"
+
+[node name="Slot_battery" type="PanelContainer" parent="Hotbar"]
+custom_minimum_size = Vector2(100, 92)
+layout_mode = 2
+tooltip_text = "Pil: Her gece lamba için 1 pil yanar.
+Telsiz çağrısı için 1 pil gerekir."
+theme_type_variation = &"CardPanel"
+
+[node name="VBox" type="VBoxContainer" parent="Hotbar/Slot_battery"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 2
+
+[node name="Icon" type="TextureRect" parent="Hotbar/Slot_battery/VBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Hotbar/Slot_battery/VBox"]
+layout_mode = 2
+theme_type_variation = &"SmallLabel"
+text = "PİL"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Count" type="Label" parent="Hotbar/Slot_battery"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_type_variation = &"ValueLabel"
+text = "0"
