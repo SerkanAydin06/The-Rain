@@ -12,6 +12,8 @@ func _ready() -> void:
 			"hour_changed",
 			Callable(self, "_on_time_changed")
 		)
+		current_hour = time_manager.current_hour
+		current_day = time_manager.current_day
 		_update_text()
 	else:
 		text = "TimeManager yok"
@@ -23,4 +25,9 @@ func _on_time_changed(hour: int, day: int) -> void:
 
 func _update_text() -> void:
 	var hour_str := str(current_hour).pad_zeros(2)
-	text = "Day %d  |  %s:00" % [current_day, hour_str]
+	var info := ""
+	if SurvivalManager.storm_active:
+		info += "  |  ⛈️ Fırtına"
+	if SurvivalManager.radio_called:
+		info += "  |  📡 Kurtarma: %d gün" % max(SurvivalManager.rescue_day - current_day, 0)
+	text = "Gün %d  |  %s:00%s" % [current_day, hour_str, info]

@@ -45,7 +45,7 @@ theme_override_constants/separation = 40
 layout_mode = 2
 theme_override_colors/font_color = Color(0.20392157, 0.59607846, 0.85882354, 1)
 theme_override_font_sizes/font_size = 64
-text = "SURVIVOR SHELTER"
+text = "THE RAIN"
 horizontal_alignment = 1
 
 [node name="ButtonsVBox" type="VBoxContainer" parent="Control/CenterContainer/VBoxContainer"]

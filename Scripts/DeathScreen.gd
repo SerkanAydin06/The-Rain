@@ -19,6 +19,7 @@ enum DeathReason {
 	INJURY,          # Yaralanma
 	EXHAUSTION,      # Yorgunluk
 	OUTSIDE_DANGER,  # Dışarıda ölüm
+	DEHYDRATION,     # Susuzluk
 	UNKNOWN          # Bilinmeyen
 }
 
@@ -27,7 +28,8 @@ const REASON_TEXTS := {
 	DeathReason.STARVATION: "[color=#e67e22]🍖 AÇLIKTAN ÖLDÜN[/color]",
 	DeathReason.INJURY: "[color=#e74c3c]💀 AĞIR YARALANARAK ÖLDÜN[/color]",
 	DeathReason.EXHAUSTION: "[color=#3498db]😴 ENERJİSİZLİKTEN ÖLDÜN[/color]",
-	DeathReason.OUTSIDE_DANGER: "[color=#9b59b6]🌪️ DIŞARIDA MAHVOLDUN[/color]",
+	DeathReason.OUTSIDE_DANGER: "[color=#9b59b6]🌧️ ZEHİRLİ YAĞMURDA MAHVOLDUN[/color]",
+	DeathReason.DEHYDRATION: "[color=#2980b9]💧 SUSUZLUKTAN ÖLDÜN[/color]",
 	DeathReason.UNKNOWN: "[color=#95a5a6]☠️ ÖLDÜN[/color]"
 }
 
@@ -69,6 +71,19 @@ func show_death_screen(reason: String, stats: Dictionary = {}) -> void:
 	show()
 	_start_fade_animation()
 
+func show_victory_screen(stats: Dictionary = {}) -> void:
+	"""Kurtarılma (kazanma) ekranı"""
+	GameState.game_paused = true
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.ui_blocked = true
+	title_label.text = "KURTULDUN"
+	title_label.add_theme_color_override("font_color", Color("#2ecc71"))
+	reason_label.text = "[color=#2ecc71]🚁 Kurtarma ekibi seni yağmurun ortasından çıkardı.[/color]"
+	_fill_stats(stats)
+	show()
+	_start_fade_animation()
+
 # ==================================================
 # HELPER FUNCTIONS
 # ==================================================
@@ -83,6 +98,8 @@ func _string_to_reason(reason_str: String) -> DeathReason:
 			return DeathReason.EXHAUSTION
 		"outside":
 			return DeathReason.OUTSIDE_DANGER
+		"dehydration":
+			return DeathReason.DEHYDRATION
 		_:
 			return DeathReason.UNKNOWN
 
@@ -101,6 +118,8 @@ func _set_reason_text(reason: DeathReason) -> void:
 			title_label.add_theme_color_override("font_color", Color("#3498db"))
 		DeathReason.OUTSIDE_DANGER:
 			title_label.add_theme_color_override("font_color", Color("#9b59b6"))
+		DeathReason.DEHYDRATION:
+			title_label.add_theme_color_override("font_color", Color("#2980b9"))
 		_:
 			title_label.add_theme_color_override("font_color", Color("#95a5a6"))
 
@@ -194,7 +213,7 @@ func _on_restart_pressed() -> void:
 	await tween.finished
 	
 	# Oyunu yeniden başlat
-	GameState.game_paused = false
+	GameState.reset_game()
 	get_tree().reload_current_scene()
 
 func _on_menu_pressed() -> void:

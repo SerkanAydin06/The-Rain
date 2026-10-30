@@ -3,7 +3,7 @@ extends CharacterBody2D
 # ==================================================
 # SİNYALLER
 # ==================================================
-signal stats_changed(health: float, hunger: float, energy: float, suit: float)
+signal stats_changed(health: float, hunger: float, energy: float, suit: float, thirst: float)
 signal player_died(reason: String, stats: Dictionary)
 
 # ==================================================
@@ -21,10 +21,12 @@ signal player_died(reason: String, stats: Dictionary)
 var health := 100.0
 var hunger := 100.0
 var energy := 100.0
-var suit := 100.0
+var thirst := 100.0
 
 var hunger_rate := 2.0
 var energy_rate := 1.0
+var thirst_rate := 3.0
+const DIRTY_WATER_SICK_CHANCE := 0.4
 
 var is_dead := false
 var is_unconscious := false
@@ -37,6 +39,7 @@ var _is_time_manager_connected := false  # ⭐ TimeManager bağlantı kontrolü
 # LIFECYCLE
 # ==================================================
 func _ready():
+	_apply_saved_stats()
 	update_ui()
 	_setup_player_light()
 	print("✅ Player hazır")
@@ -71,6 +74,15 @@ func _physics_process(delta: float) -> void:
 	
 	_handle_animations(dir)
 	move_and_slide()
+
+func _apply_saved_stats() -> void:
+	var s: Dictionary = GameState.player_stats
+	if s.is_empty():
+		return
+	health = float(s.get("health", health))
+	hunger = float(s.get("hunger", hunger))
+	energy = float(s.get("energy", energy))
+	thirst = float(s.get("thirst", thirst))
 
 # ==================================================
 # TIME MANAGER BAĞLANTISI
@@ -188,28 +200,40 @@ func _on_hour_passed(_hour: int, _day: int) -> void:
 	if is_dead: 
 		return
 	
+	# Dışarıdayken değerleri OutsidePanel simülasyonu yönetir
+	if GameState.is_outside:
+		return
+	
 	print_debug("Saat geçiyor - Saat: ", _hour, ", Gün: ", _day)
 	
 	# Eğer uyuyorsa bonus, değilse normal kayıp
 	if is_sleeping:
 		hunger -= hunger_rate * 0.25
+		thirst -= thirst_rate * 0.3
 		energy += 15.0
-		health += 5.0
-		print_debug("Uykuda - Açlık: -", hunger_rate * 0.25, " Enerji: +15 HP: +5")
+		# Aç/susuz uyuyan iyileşmez
+		if hunger > 20 and thirst > 20:
+			health += 5.0
 	else:
 		hunger -= hunger_rate
-		energy -= energy_rate
-		print_debug("Normal - Açlık: -", hunger_rate, " Enerji: -", energy_rate)
+		thirst -= thirst_rate
+		# Karanlıkta (pil yoksa) stres: enerji daha hızlı düşer
+		var drain := energy_rate * (2.0 if SurvivalManager.is_dark() else 1.0)
+		energy -= drain
 	
-	# Açlıktan hasar
+	# Açlık / susuzluk hasarı
 	if hunger <= 0:
 		health -= 5.0
-		print_debug("Açlıktan hasar: -5 HP")
+	if thirst <= 0:
+		health -= 8.0
 	
 	# Değerleri sınırla
 	hunger = clamp(hunger, 0, 100)
+	thirst = clamp(thirst, 0, 100)
 	energy = clamp(energy, 0, 100)
 	health = clamp(health, 0, 100)
+	
+	_update_light()
 	
 	print_debug("Yeni değerler - HP: ", health, " Açlık: ", hunger, " Enerji: ", energy)
 	
@@ -228,7 +252,11 @@ func _on_hour_passed(_hour: int, _day: int) -> void:
 
 func update_ui() -> void:
 	print_debug("UI güncelleniyor - HP: ", health, " Açlık: ", hunger, " Enerji: ", energy, " Suit: ", GameState.suit_durability)
-	stats_changed.emit(health, hunger, energy, GameState.suit_durability)
+	stats_changed.emit(health, hunger, energy, GameState.suit_durability, thirst)
+
+func _update_light() -> void:
+	if player_light:
+		player_light.energy = 0.35 if SurvivalManager.is_dark() else 1.0
 
 func faint() -> void:
 	if is_unconscious or is_dead: return
@@ -285,25 +313,83 @@ func start_sleep(hours: int, fade_node: CanvasLayer = null) -> void:
 	print_debug("Uyku bitti")
 	is_unconscious = false
 	is_sleeping = false
+	if not is_dead:
+		GameState.save_game()
 
-func die() -> void:
+func use_consumable(item: String) -> bool:
+	if is_dead or is_sleeping:
+		return false
+	match item:
+		"food":
+			if hunger >= 100.0 or not GameState.remove_from_inventory("food"):
+				return false
+			hunger = clampf(hunger + 35.0, 0.0, 100.0)
+		"medkit":
+			if health >= 100.0 or not GameState.remove_from_inventory("medkit"):
+				return false
+			health = clampf(health + 40.0, 0.0, 100.0)
+		"energy_drink":
+			if energy >= 100.0 or not GameState.remove_from_inventory("energy_drink"):
+				return false
+			energy = clampf(energy + 25.0, 0.0, 100.0)
+			thirst = clampf(thirst + 10.0, 0.0, 100.0)
+		"water":
+			if thirst >= 100.0:
+				return false
+			if GameState.remove_from_inventory("water"):
+				thirst = clampf(thirst + 40.0, 0.0, 100.0)
+			elif GameState.remove_from_inventory("dirty_water"):
+				thirst = clampf(thirst + 30.0, 0.0, 100.0)
+				if randf() < DIRTY_WATER_SICK_CHANCE:
+					health = clampf(health - 12.0, 0.0, 100.0)
+					_notify("Kirli su midene dokundu! -12 Can")
+					if health <= 0:
+						die()
+			else:
+				return false
+		_:
+			return false
+	update_ui()
+	return true
+
+func _notify(text: String) -> void:
+	var dialogue = get_tree().get_first_node_in_group("dialogue_ui")
+	if dialogue and dialogue.has_method("show_dialogue_for_time"):
+		dialogue.show_dialogue_for_time(text, 2.5)
+
+func die(reason_override: String = "") -> void:
 	if is_dead: return
 	is_dead = true
 	
 	var reason := "injury"
-	if hunger <= 0: reason = "starvation"
+	if not reason_override.is_empty(): reason = reason_override
+	elif thirst <= 0: reason = "dehydration"
+	elif hunger <= 0: reason = "starvation"
 	elif energy <= 0: reason = "exhaustion"
 	
-	var stats = {
-		"days_survived": GameState.current_day,
-		"total_loot": GameState.total_loot
-	}
+	# Ölünce eski kayıttan devam edilemesin
+	if FileAccess.file_exists("user://savegame.save"):
+		DirAccess.remove_absolute("user://savegame.save")
+	
+	var stats = SurvivalManager.get_stats()
 	
 	player_died.emit(reason, stats)
 
 # ==================================================
 # DEBUG FONKSİYONU - Hız kontrolü için
 # ==================================================
+func _unhandled_input(event: InputEvent) -> void:
+	if ui_blocked or is_dead or is_sleeping:
+		return
+	if event.is_action_pressed("use_food"):
+		use_consumable("food")
+	elif event.is_action_pressed("use_water"):
+		use_consumable("water")
+	elif event.is_action_pressed("use_medkit"):
+		use_consumable("medkit")
+	elif event.is_action_pressed("use_energy_drink"):
+		use_consumable("energy_drink")
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("debug"):
 		print("🔧 DEBUG - Player:")

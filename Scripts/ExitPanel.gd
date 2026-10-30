@@ -41,8 +41,6 @@ signal exit_confirmed(hours: int)
 @export_category("Exit Settings")
 @export_range(1, 12, 1) var min_hours: int = 1
 @export_range(1, 24, 1) var max_hours: int = 8
-@export_range(0, 100, 1) var base_risk: int = 20
-@export_range(1, 50, 1) var risk_per_hour: int = 10
 
 # ==================================================
 # RUNTIME VARIABLES
@@ -157,15 +155,16 @@ func _calculate_max_allowed_hours() -> int:
 	
 	var energy_factor = max(0, floor((player.energy - 10) / 8.0))
 	var hunger_factor = max(0, floor((player.hunger - 10) / 5.0))
+	var thirst_factor = max(0, floor((player.thirst - 10) / 6.0))
 	
-	var allowed = min(energy_factor, hunger_factor)
+	var allowed = min(energy_factor, min(hunger_factor, thirst_factor))
 	allowed = max(allowed, min_hours)
 	allowed = min(allowed, max_hours)
 	
 	return int(allowed)
 
 func _calculate_risk() -> int:
-	return base_risk + (exit_hours - 1) * risk_per_hour
+	return SurvivalManager.get_outside_risk(exit_hours)
 
 # ==================================================
 # UI UPDATES
@@ -179,7 +178,7 @@ func _update_ui() -> void:
 	
 	# Update labels with safe null checks
 	_set_label_text(time_label, "Süre: %d Saat" % exit_hours)
-	_set_label_text(risk_label, "Tehlike: %d%%" % risk)
+	_set_label_text(risk_label, "Tehlike: %d%%%s" % [risk, " ⛈️ FIRTINA" if SurvivalManager.storm_active else ""])
 	_set_label_text(suit_label, "Giysi: %d%%" % GameState.suit_durability)
 	
 	# Update button states
@@ -266,6 +265,9 @@ func _on_exit_pressed() -> void:
 	_play_button_sound()
 	_prepare_for_exit()
 	await _simulate_exit()
+	if player.is_dead:
+		hide()
+		return
 	_show_results()
 
 func _on_result_ok() -> void:
@@ -355,22 +357,16 @@ func _generate_result_report(collected: Dictionary) -> String:
 		player.health, 
 		player.hunger
 	]
+	report += "[b]Su:[/b] %d | [b]Enerji:[/b] %d\n\n" % [player.thirst, player.energy]
 	
 	# Collected items
 	report += "[b][color=#2ecc71]📦 BU GEZİDE TOPLANANLAR:[/color][/b]\n"
 	
 	var found_items := false
-	var items := [
-		{"key": "food", "name": "Yiyecek", "color": "#2ecc71"},
-		{"key": "battery", "name": "Pil", "color": "#3498db"},
-		{"key": "medkit", "name": "Medkit", "color": "#e74c3c"},
-		{"key": "scrap", "name": "Parça", "color": "#f39c12"}
-	]
-	
-	for item in items:
-		var amount = collected.get(item.key, 0)
+	for key in collected:
+		var amount = collected[key]
 		if amount > 0:
-			report += "• %s: [color=%s]+%d[/color]\n" % [item.name, item.color, amount]
+			report += "• %s: [color=#2ecc71]+%d[/color]\n" % [InventoryManager.get_item_display_name(key), amount]
 			found_items = true
 	
 	if not found_items:

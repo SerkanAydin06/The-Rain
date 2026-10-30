@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bq86ewdbv75rd"]
+[gd_scene load_steps=14 format=3 uid="uid://bq86ewdbv75rd"]
 
 [ext_resource type="Script" uid="uid://6iyll6ax6y74" path="res://Scripts/HUD.gd" id="1_c3eba"]
 [ext_resource type="Texture2D" uid="uid://i7nd0ykvi1vr" path="res://icons/healthicon.png" id="2_g8s2e"]
@@ -63,6 +63,13 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_thirst"]
+bg_color = Color(0.1, 0.45, 0.75, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ouvn"]
 bg_color = Color(0.4679007, 0.000159024, 0.46990812, 1)
 corner_radius_top_left = 6
@@ -84,7 +91,7 @@ metadata/_edit_use_anchors_ = true
 [node name="MainMargin" type="MarginContainer" parent="."]
 layout_mode = 0
 offset_right = 420.0
-offset_bottom = 205.0
+offset_bottom = 250.0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -146,6 +153,32 @@ custom_minimum_size = Vector2(200, 20)
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_hhtw7")
 theme_override_styles/fill = SubResource("StyleBoxFlat_w5mne")
+value = 100.0
+
+[node name="ThirstRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ThirstIcon" type="TextureRect" parent="MainMargin/BarsVBox/ThirstRow"]
+custom_minimum_size = Vector2(70, 35)
+layout_mode = 2
+expand_mode = 1
+
+[node name="ThirstLabel" type="Label" parent="MainMargin/BarsVBox/ThirstRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9254902, 0.9411765, 0.94509804, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "THIRST"
+vertical_alignment = 1
+
+[node name="ThirstBar" type="ProgressBar" parent="MainMargin/BarsVBox/ThirstRow"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_hhtw7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_thirst")
 value = 100.0
 
 [node name="EnergyRow" type="HBoxContainer" parent="MainMargin/BarsVBox"]
