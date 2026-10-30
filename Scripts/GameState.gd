@@ -113,13 +113,11 @@ func save_game() -> void:
 	if file:
 		file.store_string(JSON.stringify(save_data))
 		file.close()
-		print("✅ Oyun kaydedildi!")
 	else:
 		push_error("❌ Kayıt dosyası açılamadı")
 
 func load_game() -> bool:
 	if not FileAccess.file_exists("user://savegame.save"):
-		print("ℹ️ Kayıt dosyası yok")
 		return false
 	
 	var file = FileAccess.open("user://savegame.save", FileAccess.READ)
@@ -152,7 +150,6 @@ func load_game() -> bool:
 			if old_inventory.has(key):
 				inventory[key] = int(old_inventory[key])
 	
-	print("✅ Oyun yüklendi!")
 	return true
 
 # ==================================================
@@ -202,7 +199,6 @@ func reset_game() -> void:
 	
 	SurvivalManager.reset()
 	CraftingManager.reset()
-	print("🔄 Oyun durumu sıfırlandı!")
 
 func add_to_inventory(item: String, amount: int = 1) -> int:
 	if not inventory.has(item):
@@ -216,7 +212,6 @@ func add_to_inventory(item: String, amount: int = 1) -> int:
 	inventory[item] = new_amount
 	inventory_changed.emit()
 	
-	print("📦 Envantere eklendi: ", item, " ×", amount, " (Toplam: ", new_amount, ")")
 	return new_amount - current
 
 func remove_from_inventory(item: String, amount: int = 1) -> bool:
@@ -230,7 +225,6 @@ func remove_from_inventory(item: String, amount: int = 1) -> bool:
 	inventory[item] = current - amount
 	inventory_changed.emit()
 	
-	print("📦 Envanterden çıkarıldı: ", item, " ×", amount)
 	return true
 
 func get_item_count(item: String) -> int:
@@ -238,39 +232,3 @@ func get_item_count(item: String) -> int:
 
 func has_item(item: String, amount: int = 1) -> bool:
 	return inventory.get(item, 0) >= amount
-
-# ==================================================
-# DEBUG FONKSİYONLARI
-# ==================================================
-func debug_print_inventory() -> void:
-	print("\n=== ENVANTER DURUMU ===")
-	print("🥫 TÜKETİLEBİLİRLER:")
-	print("  food:", inventory["food"])
-	print("  medkit:", inventory["medkit"])
-	print("  battery:", inventory["battery"])
-	print("  energy_drink:", inventory["energy_drink"])
-	
-	print("🛠️ MALZEMELER:")
-	print("  Basit:", inventory["wood"], "wood,", inventory["stone"], "stone,", 
-		  inventory["scrap"], "scrap,", inventory["cloth"], "cloth")
-	print("  Orta:", inventory["wire"], "wire,", inventory["plastic"], "plastic,",
-		  inventory["metal"], "metal,", inventory["chemical"], "chemical")
-	print("  Nadir:", inventory["electronic"], "electronic,", inventory["fuel"], "fuel,",
-		  inventory["medicine"], "medicine,", inventory["component"], "component")
-	
-	print("⚒️ CRAFT EDİLMİŞ:")
-	print("  medkit_crafted:", inventory["medkit_crafted"])
-	print("  battery_crafted:", inventory["battery_crafted"])
-	print("  toolkit:", inventory["toolkit"])
-	print("  radio_part:", inventory["radio_part"])
-	print("========================\n")
-
-func debug_add_all_items() -> void:
-	print("🔧 DEBUG: Tüm item'lar ekleniyor...")
-	
-	for item in inventory.keys():
-		var limit = stack_limits.get(item, 10)
-		inventory[item] = limit
-	
-	inventory_changed.emit()
-	debug_print_inventory()

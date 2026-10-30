@@ -38,9 +38,7 @@ func _pass_hour() -> void:
 	hour_changed.emit(current_hour, current_day)
 
 func force_pass_hour() -> void:
-	print_debug("Zorunlu saat geçişi yapılıyor...")
 	_pass_hour()
-	print_debug("Saat geçişi tamamlandı: Saat ", current_hour, ", Gün ", current_day)
 	
 func pause_time():
 	GameState.game_paused = true  # GameState'i güncelle

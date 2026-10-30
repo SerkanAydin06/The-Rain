@@ -227,10 +227,6 @@ var workbench_level: int = 1  # Yükseltmelerle kalıcı olarak artar
 # LIFECYCLE
 # ==================================================
 func _ready() -> void:
-	print("🛠️ CraftingManager hazır")
-	print("   - Toplam recipe: ", all_recipes.size())
-	print("   - Açık recipe: ", player_stats["discovered_recipes"].size())
-	print("   - Başlangıç recipe'leri: ", player_stats["discovered_recipes"])
 	
 	# Oyun başında unlock kontrolleri
 	_check_recipe_unlocks()
@@ -259,7 +255,6 @@ func get_recipe_info(recipe_id: String) -> Dictionary:
 	"""Tarif detaylarını döndür"""
 	var recipe = all_recipes.get(recipe_id, {})
 	if recipe.is_empty():
-		print("❌ Tarif bulunamadı: ", recipe_id)
 		return {}
 	
 	return recipe.duplicate(true)
@@ -323,7 +318,6 @@ func can_craft(recipe_id: String) -> Dictionary:
 
 func start_crafting(recipe_id: String, workbench_tier: int = 1) -> Dictionary:
 	"""Craft işlemini başlat"""
-	print("🛠️ Craft başlatılıyor: ", recipe_id, " (Workbench Tier: ", workbench_tier, ")")
 	
 	var result = {
 		"success": false,
@@ -368,8 +362,6 @@ func start_crafting(recipe_id: String, workbench_tier: int = 1) -> Dictionary:
 	var actual_time = base_time * time_multiplier
 	result["craft_time"] = actual_time
 	
-	print("   ⏱️ Craft süresi: ", actual_time, " saat")
-	print("   📦 Malzemeler harcandı")
 	
 	# Asenkron craft işlemi
 	await _perform_crafting( actual_time, workbench_tier)
@@ -386,7 +378,6 @@ func start_crafting(recipe_id: String, workbench_tier: int = 1) -> Dictionary:
 	return result
 
 func _perform_crafting(craft_time: float, workbench_tier: int) -> void:
-	print("   🔄 Crafting işlemi başladı...")
 	
 	# Her craft saati oyun saatini de ilerletir
 	var total_hours: int = max(1, ceili(craft_time))
@@ -402,13 +393,10 @@ func _perform_crafting(craft_time: float, workbench_tier: int) -> void:
 		# Progress event'i gönder (UI güncellemek için)
 		materials_updated.emit()
 		
-		print("   📊 Progress: %d%%" % int(crafting_progress * 100))
 	
 	if not is_crafting:
-		print("   ⚠️ Crafting iptal edildi")
 		return
 	
-	print("   ✅ Crafting tamamlandı")
 
 func _complete_crafting(recipe_id: String, workbench_tier: int) -> Dictionary:
 	"""Craft işlemini tamamla"""
@@ -429,7 +417,6 @@ func _complete_crafting(recipe_id: String, workbench_tier: int) -> Dictionary:
 	var success_chance = _calculate_success_chance(recipe, workbench_tier, result["quality"])
 	var random_roll = randf()
 	
-	print("   🎲 Başarı şansı: %d%%, Zar: %.2f" % [int(success_chance * 100), random_roll])
 	
 	# İnşaat/yükseltme/onarım işleri başarısız olmaz
 	if recipe.has("effect"):
@@ -446,7 +433,6 @@ func _complete_crafting(recipe_id: String, workbench_tier: int) -> Dictionary:
 			var lost = int(used * 0.5)
 			if lost > 0:
 				GameState.add_to_inventory(material, lost)
-				print("   💔 Kayıp: %s ×%d iade edildi" % [material, lost])
 		
 		crafting_failed.emit(result["message"])
 	else:
@@ -483,7 +469,6 @@ func _complete_crafting(recipe_id: String, workbench_tier: int) -> Dictionary:
 		
 		crafting_completed.emit(item_name, final_amount)
 		
-		print("   🎉 Craft başarılı: %s ×%d" % [item_name, final_amount])
 	
 	# Crafting durumunu sıfırla
 	current_crafting_item = ""
@@ -518,9 +503,6 @@ func _calculate_craft_quality(recipe: Dictionary, workbench_tier: int) -> float:
 	# Sınırla: %70 - %130 arası
 	quality = clamp(quality, 0.7, 1.3)
 	
-	print("   📐 Kalite: %.2f (Workbench: +%.2f, Skill: +%.2f, Random: +%.2f)" % [
-		quality, workbench_bonus, skill_bonus, random_variation
-	])
 	
 	return quality
 
@@ -552,9 +534,6 @@ func _increment_craft_count(recipe_id: String) -> void:
 	player_stats["crafted_items"][recipe_id] = current_count + 1
 	player_stats["total_crafts"] += 1
 	
-	print("📊 Craft sayısı [%s]: %d (Toplam: %d)" % [
-		recipe_id, current_count + 1, player_stats["total_crafts"]
-	])
 
 func _add_skill_xp(skill_name: String, tier: int) -> void:
 	"""Skill XP ekle"""
@@ -572,9 +551,6 @@ func _add_skill_xp(skill_name: String, tier: int) -> void:
 	player_stats["skill_xp"][skill_name] = xp
 	player_stats["skills"][skill_name] = level
 	
-	print("🎯 Skill XP: %s +%d (Mevcut: %d)" % [
-		skill_name, xp_gain, player_stats["skills"][skill_name]
-	])
 
 # ==================================================
 # RECIPE UNLOCK SYSTEM - GÜNCELLENMİŞ
@@ -595,7 +571,6 @@ func _check_recipe_unlocks() -> void:
 			player_stats["discovered_recipes"].append(recipe_id)
 			newly_unlocked.append(recipe_id)
 			
-			print("🎉 YENİ TARİF AÇILDI: %s (%s)" % [recipe["name"], recipe["description"]])
 			recipe_discovered.emit(recipe_id)
 
 func _is_recipe_unlocked(recipe: Dictionary) -> bool:
@@ -641,7 +616,6 @@ func _is_recipe_unlocked(recipe: Dictionary) -> bool:
 func cancel_crafting() -> void:
 	"""Craft işlemini iptal et"""
 	if is_crafting:
-		print("⚠️ Crafting iptal ediliyor...")
 		is_crafting = false
 		current_crafting_item = ""
 		crafting_progress = 0.0
@@ -650,13 +624,11 @@ func discover_blueprint(blueprint_id: String) -> void:
 	"""Yeni blueprint keşfet"""
 	if not blueprint_id in player_stats["found_blueprints"]:
 		player_stats["found_blueprints"].append(blueprint_id)
-		print("📜 Yeni blueprint keşfedildi: ", blueprint_id)
 		_check_recipe_unlocks()
 
 func set_workbench_tier(tier: int) -> void:
 	"""Workbench tier'ını ayarla"""
 	current_workbench_tier = max(tier, workbench_level)
-	print("🛠️ Workbench Tier ayarlandı: ", current_workbench_tier)
 
 func _apply_effect(recipe_id: String, recipe: Dictionary) -> String:
 	if recipe.get("one_time", false):
@@ -716,58 +688,3 @@ func reset() -> void:
 func _on_inventory_changed() -> void:
 	"""Envanter değiştiğinde crafting kontrolü"""
 	pass  # İleride crafting durdurma vs. eklenebilir
-
-# ==================================================
-# DEBUG FUNCTIONS
-# ==================================================
-func debug_unlock_all_recipes() -> void:
-	"""Tüm tarifleri aç (debug için)"""
-	print("🔓 DEBUG: Tüm tarifler açılıyor...")
-	
-	for recipe_id in all_recipes:
-		if not recipe_id in player_stats["discovered_recipes"]:
-			player_stats["discovered_recipes"].append(recipe_id)
-			print("  ✅ ", all_recipes[recipe_id]["name"])
-
-func debug_add_materials() -> void:
-	"""Debug için malzeme ekle"""
-	print("🛠️ DEBUG: Crafting malzemeleri ekleniyor...")
-	
-	var test_materials = {
-		"cloth": 10,
-		"scrap": 15,
-		"chemical": 5,
-		"metal": 8,
-		"wire": 6,
-		"wood": 5,
-		"electronic": 3
-	}
-	
-	for material in test_materials:
-		GameState.add_to_inventory(material, test_materials[material])
-	
-	print("✅ Malzemeler eklendi")
-
-func debug_print_status() -> void:
-	"""Debug için durumu yazdır"""
-	print("\n=== CRAFTING MANAGER DEBUG ===")
-	print("Açık tarifler (%d):" % player_stats["discovered_recipes"].size())
-	for recipe_id in player_stats["discovered_recipes"]:
-		var recipe = all_recipes[recipe_id]
-		print("  - %s (Tier %d)" % [recipe["name"], recipe["tier"]])
-	
-	print("Crafted items:")
-	for item_id in player_stats["crafted_items"]:
-		print("  - %s: %d" % [item_id, player_stats["crafted_items"][item_id]])
-	
-	print("Skills:")
-	for skill in player_stats["skills"]:
-		print("  - %s: %d" % [skill, player_stats["skills"][skill]])
-	
-	print("Toplam craft: %d" % player_stats["total_crafts"])
-	print("Workbench Tier: %d" % current_workbench_tier)
-	print("Crafting durumu: %s" % ("Aktif" if is_crafting else "Pasif"))
-	if is_crafting:
-		print("  - Item: %s" % current_crafting_item)
-		print("  - Progress: %d%%" % int(crafting_progress * 100))
-	print("==============================")
